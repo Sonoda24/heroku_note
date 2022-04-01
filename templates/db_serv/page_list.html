@@ -1,0 +1,140 @@
+{% include 'db_serv/list_header.html' %}
+  <div class="main tab-content"><!-- Start main tab-content -->
+    <div class="tab-pane" id="tab1"><!-- Start tab1 -->
+     <div class="row">
+      <div class="col-sm-3 sidenav" style="line-height: 0.8em"> <!-- Start sidenav -->
+      	  <h4>Editor Page</h4>
+
+	<!-- サブメニュー（左カラム） -->
+	<form name="selboxB">
+	<p><label>課題名</label><br>
+	<input type="text" name="comboA" list="list_A" id="comA" onchange="chanComA()" autocomplete="off" style="height:25px; width:180px;">
+	<datalist id="list_A"></datalist>
+	<p><label>大分類</label><br>
+	<input type="text" name="comboB" list="list_B" id="comB" onchange="chanComB()"  autocomplete="off" style="height:25px; width:180px;">
+	<datalist id="list_B"></datalist>
+	<p><label>中分類</label><br>
+	<input type="text" name="comboC" list="list_C" id="comC" onchange="chanComC()"  autocomplete="off" style="height:25px; width:180px;">
+	<datalist id="list_C"></datalist>
+	<p><label>小分類</label><br>
+	<input type="text" name="comboD" list="list_D" id="comD" onchange="chanComD()"  autocomplete="off" style="height:25px; width:180px;">
+	<datalist id="list_D"></datalist>
+	<p><label>概要</label><br>
+	<textarea name="viewText" id="Texview" cols="32" rows=5 maxlength="150" style="line-height: 1em"></textarea>
+	<p><label>更新日</label><br>
+	<input type="date" id="T_date"></input>
+	</form>
+
+      </div><!-- End sidenav -->
+
+      <div class="col-sm-9 float-right"><!-- Start col-sm-9 -->
+	<!-- メインメニュー -->
+        <nav class="navbar navbar-expand-sm bg-primary navbar-light">
+	<ul class="navbar-nav">
+		<li class="nav-item" id="menuB01"><a class="nav-link" href="#!" onclick="check_prev()">Prev</a></li>
+		<li class="nav-item" id="menuB02"><a class="nav-link text-white" href="#!" onclick="check_next()">Next</a></li>
+		<li class="nav-item" id="menuB03"><a class="nav-link text-white" href="#!" onclick="copy_add()">Copy新規</a></li>
+		<li class="nav-item" id="menuB04"><a class="nav-link text-white" href="#!" onclick="new_add()">新規</a></li>
+		<li class="nav-item" id="menuB05"><a class="nav-link text-white" href="#!" onclick="setedit_disable()">変更</a></li>
+		<li class="nav-item" id="menuB06"><a class="nav-link text-white" href="#!" onclick="submit_save()">保存</a></li>
+		<li class="nav-item" id="menuB07"><a class="nav-link text-white" href="#!" onclick="submit_del()">削除</a></li>
+		<li class="nav-item" id="menuB08"><a class="nav-link" href="#!" onclick="rn_displaydb()">戻る</a></li>
+	</ul>
+	</nav>
+	<br>
+      	<!-- h3>Editor Page</h3 -->
+		<div id="main">
+		<div id="content" style="width:95%; height:400px; overflow-y:scroll;"  contenteditable="false" ><p id="tex">Getting started with Aloha Editor!</p></div>
+		</div>
+
+
+
+      </div><!-- End col-sm-9 -->
+     </div><!-- End row -->
+    </div><!-- End tab1 -->
+
+    <div class="tab-pane active" id="tab2"><!-- Start tab2 -->
+     <div class="row">
+      <div class="col-sm-3 sidenav" style="line-height: 0.8em"> <!-- Start sidenav -->
+        <h4>Search and Data Table</h4>
+
+	<!-- サブメニュー（左カラム） -->
+	<form name="selbox">
+	<p><label>課題名</label><br>
+	<select id="comboboxA" onchange="changeCombA()" style="height:25px; width:180px;"></select>
+	<p><label>大分類</label><br>
+	<select id="comboboxB"  onchange="changeCombB()" style="height:25px; width:180px;"></select>
+	<p><label>中分類</label><br>
+	<select id="comboboxC"  onchange="changeCombC()" style="height:25px; width:180px;"></select>
+	<p><label>小分類</label><br>
+	<select id="comboboxD"  onchange="changeCombD()" style="height:25px; width:180px;"></select>
+	</form>
+
+      </div><!-- End sidenav -->
+
+      <div class="col-sm-9 float-right"><!-- Start col-sm-9 -->
+	<!-- メインメニュー -->
+        <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+	<ul class="navbar-nav">
+		<li class="nav-item" id="menu01"><a class="nav-link" href="#!" onclick="displaydb()">検索</a></li>
+		<!-- li class="nav-item" id="menu02"><a class="nav-link" href="#!" onclick="displaydb()">抽出</a></li -->
+                <li class="nav-item" id="menu02"><a class="nav-link" href="{% url 'detail' %}" onclick="return check_checkbox();">抽出</a>
+		<li class="nav-item" id="menu03"><a class="nav-link" href="#!" onclick="new_add2()">新規</a></li>
+		<li class="nav-item" id="menu04"><a class="nav-link" href="">終了</a></li>
+		<li class="nav-item" id="menu05"><a class="nav-link" href="">Home</a></li>
+	</ul>
+	</nav>
+	<!-- ニュース（中央カラム） -->
+    <!-- 前へ の部分 -->
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">前へ</a>
+    {% endif %}
+
+    <!-- 1/3 の部分 -->
+   {{ page_obj.number }}/{{ page_obj.paginator.num_pages }}
+
+    <!-- 次へ の部分 -->
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">次へ</a>
+    {% endif %}
+	<div id="news" style="width:100%;height:430px;float:left; overflow-y:scroll;overflow-x:scroll;">
+	  <!-- Js用の新テーブルの設定（最初の1行までとして2行目以降はCopyして作成する -->
+	  <table id="my_db">
+		<thead>
+		  <tr>
+	   	    <th>選</th>
+	   	    <th>課題名</th>
+	   	    <th>分類１</th>
+	   	    <th>分類２</th>
+	   	    <th>分類３</th>
+	   	    <th>更新日</th>
+	   	    <th>名称</th>
+		  </tr>
+   		</thead>
+   		<tbody id="my_db-tbody">
+{% for choice in page_list %}
+		  <tr>
+	   	    <td bgcolor="#99CC00" align="center"><input type="checkbox" class="checkboxes" /></td>
+	   	    <td>{{ choice.theme}}</td>
+	   	    <td>{{ choice.bunrui1}}</td>
+	   	    <td>{{ choice.bunrui2}}</td>
+	   	    <td>{{ choice.bunrui3}}</td>
+	   	    <td>{{ choice.day_regist}}</td>
+	   	    <td>{{ choice.overview}}</td>
+		  </tr>
+{% endfor %}
+		</tbody>
+	</table>
+      </div><!-- news -->
+
+      </div><!-- End col-sm-9 -->
+     </div><!-- End row -->
+    </div><!-- End tab2 -->
+  </div><!-- End main tab-content -->
+<script>
+
+		<!-- JavaScriptはbody終了タグの直上に配置します -->
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<!-- script src="js/tabnav_ex01.js"></script -->
+
+{% include 'db_serv/footer.html' %}

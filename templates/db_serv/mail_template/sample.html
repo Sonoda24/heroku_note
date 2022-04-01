@@ -1,0 +1,75 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head>
+<meta charset="UTF-8" />
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<title>Sample</title>
+<style>
+.Tvis {
+  position: absolute;
+  left: 20px; top: 0px;
+  padding:0 0px 0 0px;
+  width:100%;
+  height:auto;
+  z-index: 30;
+  background-color:"red";
+  opacity: 0.;  
+}
+.canv {
+  z-index:20;
+  padding:0px;
+  left: -20px;
+  margin:0px;
+  width:100%;
+  position: absolute;
+  opacity: 0.;  
+}
+.my_button {
+  display: block;
+  width: 160px;
+  height: 36px;
+  margin: 10px 10px 10px 10px; /* 外側の時計回りの余白 */
+  text-align: center;
+  color: #fff;   /* #666; */
+  line-height: 36px;
+  text-decoration: none;
+  background-color: #69c;  /*  #efefef;  */
+  border: 1px solid #69c;  /*  #ddd;     */
+  border-radius: 5px;
+  float: left;
+}
+.my_button:hover {color:#ffffff; background:#0000cc;} /*カーソルが乗っているリンクの色*/
+
+.point_none {
+  pointer-events:none;
+}
+.point_auto {
+  pointer-events: auto;
+}
+</style></head>
+
+<body>
+        <svg id="mesh_canv" class="canv" width="1000" height="1000" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	    <defs>
+	      <marker id="start_arw" viewBox="-10 -3 10 6" refX="-10" refY="0" markerWidth="10" markerHeight="6" orient="auto">
+	        <path d="M -10 0 L 0 -3 L 0 3 Z"/>
+	      </marker>
+	      <marker id="end_arw" viewBox="0 -3 10 6" refX="10" refY="0" markerWidth="10" markerHeight="6" orient="auto">
+	        <path d="M 0 -3 L 0 3 L 10 0 Z"/>
+	      </marker>
+	    </defs>
+	</svg>
+
+
+<div class="Tvis" id="texx" contenteditable="false" width="100%" height="100%" style="z-index: 40;"><svg id="svg_00" class="canv point_none" style="display;block" width="100%" height="2000" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	<g id="g1620970993058" fig="top" class="top"><path d="" style="stroke-width: 2; stroke: rgb(0, 0, 0); fill: none;"/><g id="g1620971080271" fig="path" close="else" smooth="smooth"><path d="M124, 98C111.3, 69.09 118.63, 46.76 146, 31C179.9, 11.48 178.7, 45.22 190, 60C202.65, 76.55 150.85, 117.27 211, 116C250.17, 115.18 247.91, 61.49 285, 58C320.06, 54.7 334.39, 70.37 328, 105" style="stroke-width: 2; stroke: rgb(0, 0, 0); fill: none;"/></g><g id="g1620971091698" fig="path" close="close" smooth="else"><path d="M618, 30L525, 74L590, 137L702, 92L618, 30 Z" style="stroke-width: 2; stroke: rgb(0, 0, 0); fill: none;"/></g><g fig="text" style="display:block;" transform="translate(384,268)" fill="#03af7a" id="t1641900267699" class="draggable">
+		  <!-- text text-anchor="start" font-size="14" stroke-width="0" rotate="0" style="display:block;" -->
+		  <text text-anchor="start" font-size="14" style="display:block;">
+			<tspan x="40" y="20">Text</tspan>
+		  </text>
+		<rect x="39.99999237060547" y="7.200008392333984" width="26.58613395690918" height="16" stroke="blue" fill="none" strokewidth="1px" id="rect01" fig="temp"/></g><g fig="text" style="display:block;" transform="translate(570,304)" fill="#03af7a" id="t1641900272934">
+		  <!-- text text-anchor="start" font-size="14" stroke-width="0" rotate="0" style="display:block;" -->
+		  <text text-anchor="start" font-size="14" style="display:block;">
+			<tspan x="40" y="20">Text</tspan>
+		  </text>
+		</g></g></svg><div id="divsvg_00" class="divsvg" level="0" style="margin-left:50px;margin-right:100px;"><p style="">（書籍）すぐに作れるラズベリーパイ×ネットワーク　７章、８章</p><p style="">７章Step?password関係　<br style="" />　　　root（SuperUser)　password<br style="" /><a class="my_button" href="/new_list.html/">ボタンの文言1</a><a class="my_button" href="#">ボタンの文言2</a><a class="my_button" href="#">ボタンの文言3</a>
+７章Step?ファイアウォールの設定　－－－－－－－－－－－－後回し<br />７章Step?IPアドレスを固定<br />　　　　　ファイル/etc/network/interfacesを確認－－－－－既に済の状態<br />７章Step??Apasheインストールを実施及び動作確認<br />　　　　　<span style="color:blue;background-color:yellow;font-size:20px;font-style:italic;font-family:'HGS創英角ﾎﾟｯﾌﾟ体';">インストール後http://192.168.1.22/　で動作確認OK</span><br />　　　　　ついでに<span style="color:#26ed47;">ダイナミックaaaDNS</span>にて取得のDomainにてのスマホからの動作確認OK<br /><br /></p><div style="height:100px; background-color:#ffffe0;"><p style="background-color:#edf7ff;">Pタグを挿入しました。</p></div><div style=""><p style="">DIVタグ＆Pタグを挿入しました。</p></div><div style=""><p>DIVタグ＆Pタグを挿入しました。</p></div></div><svg id="svg_01" class="canv point_none" style="display;block" width="100%" height="2000" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	<g id="g1620971010970" fig="top" class="top"><g id="g1620971035835" fig="path" close="close" smooth="else"><path d="M160, 26L96, 92L200, 138L276, 90L160, 26 Z" style="stroke-width: 2; stroke: rgb(0, 0, 0); fill: none;"/></g><g id="g1620971051371" fig="path" close="close" smooth="smooth"><path d="M447, 77C453.51, 51.22 471.29, 36.27 495, 27C516.9, 18.44 537.13, 24.61 557, 34C577.83, 43.85 596.77, 55.72 605, 79C611.74, 98.04 598.27, 106.72 586, 116C568.53, 129.22 548.7, 136.13 527, 138C506.79, 139.74 487.1, 139.04 470, 126C453.82, 113.66 441.29, 99.61 447, 77 Z" style="stroke-width: 2; stroke: rgb(0, 0, 0); fill: none;"/></g></g></svg><div id="divsvg_01" class="divsvg" level="0" style="margin-left:50px;margin-right:100px;">８章の動画配信もザット読み、後半のmjpg-streamerを使ってを読み<br />　　　以前作成のWeｂiopiによるクローラクレーン＋mjpg-streamerを駆動させる手順を<br />　　　試すとそのままOK（取得Domainにての動画配信を確認）　<br style="" /><br style="" />　　　　　<p></p></div></div></body></html>

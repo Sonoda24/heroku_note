@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="CONTENT-TYPE" content="text/html; charset=utf-8" />
+<title>My_DB index</title>
+</head>
+<body>
+<h1>My_DB index</h1>
+
+<ul>
+{% for choice in latest_list %}
+    <li>{{ choice.no}}  {{ choice.day_regist}}  {{ choice.overview}}</li>
+{% endfor %}
+</ul>
+<hr />
+June/4/2020<p />
+</body>
+</html>

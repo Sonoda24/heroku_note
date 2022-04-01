@@ -1,0 +1,15 @@
+﻿<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Close_Pop</title>
+    </head>
+<body>
+<script type="text/javascript">
+console.log('***close.html open');
+var param = '{{ url }}';
+window.opener.{{ function_name }}(param);
+window.close();
+</script>
+</body>
+</html>

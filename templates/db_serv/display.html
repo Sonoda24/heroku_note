@@ -1,0 +1,123 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Display</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <script type="text/javascript" src="https://d3js.org/d3.v5.min.js"></script>
+  <!--Bootstrap４を３に変え下記３行の変更でBottomメニュー可能となる-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<style>
+        nav.mt-3 {
+	    margin-top: 0 !important;
+	    padding: 0;
+        }
+        .tool {
+  	    display: flex;
+        }
+        .menu {
+  	    display: flex;
+        }
+        .navbar {
+	    height: 30px;
+	    min-height: 30px;
+	}
+.Tvis {
+  position: absolute;
+  left: 20px; top: 0px;
+  padding:0 0px 0 0px;
+  width:100%;
+  height:auto;
+  z-index: 30;
+  background-color:"red";
+  opacity: 0.;  
+}
+.canv {
+  z-index:20;
+  padding:0px;
+  left: -20px;
+  margin:0px;
+  width:100%;
+  position: absolute;
+  opacity: 0.;  
+}
+.my_button {
+  display: block;
+  width: 160px;
+  height: 36px;
+  margin: 10px 10px 10px 10px; /* 外側の時計回りの余白 */
+  text-align: center;
+  color: #fff;   /* #666; */
+  line-height: 36px;
+  text-decoration: none;
+  background-color: #69c;  /*  #efefef;  */
+  border: 1px solid #69c;  /*  #ddd;     */
+  border-radius: 5px;
+  float: left;
+}
+.my_button:hover {color:#ffffff; background:#0000cc;} /*カーソルが乗っているリンクの色*/
+
+.point_none {
+  pointer-events:none;
+}
+.point_auto {
+  pointer-events: auto;
+}
+</style></head>
+<body>
+  <div class="main tab-content"><!-- Start main tab-content -->
+     <div class="row">
+	<!-- メインメニュー -->
+	<!-- nav class="navbar fixed-bottom navbar-expand-sm bg-primary navbar-dark" -->
+	<nav class="navbar navbar-expand-sm navbar-dark navbar-default navbar-fixed-bottom">
+	<!-- nav class="navbar navbar-expand-sm bg-primary navbar-dark navbar-default fixed-bottom" -->
+	<ul  class="navbar-nav">
+		<li class="nav-item" id="menuB01"><a class="nav-link" href="#!" onclick="check_prev()">Prev</a></li>
+		<li class="nav-item" id="menuB02"><a class="nav-link" href="#!" onclick="check_next()">Next</a></li>
+		<li class="nav-item" id="menuB05"><a class="nav-link" onclick="make_url(Ed_recnum)">編集</a></li>
+		<!-- li class="nav-item" id="menuB07"><a class="nav-link" href="#!" onclick="submit_del()">削除</a></li -->
+		<!-- li class="nav-item" id="menuB08"><a class="nav-link" href="#" onclick="window.history.back(); return false;">戻る</a></li -->
+		<li class="nav-item" id="menuB08"><a class="nav-link" href="{% url 'new_list' %}">戻る</a>
+	</ul>
+	</nav>
+        <svg id="mesh_canv" class="canv" width="1000" height="1000" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	    <defs>
+	      <marker id="start_arw" viewBox="-10 -3 10 6" refX="-10" refY="0" markerWidth="10" markerHeight="6" orient="auto">
+	        <path d="M -10 0 L 0 -3 L 0 3 Z"/>
+	      </marker>
+	      <marker id="end_arw" viewBox="0 -3 10 6" refX="10" refY="0" markerWidth="10" markerHeight="6" orient="auto">
+	        <path d="M 0 -3 L 0 3 L 10 0 Z"/>
+	      </marker>
+	    </defs>
+	</svg>
+	<div class="Tvis" id="texx" contenteditable="true" width="100%" height="100%" ></div>
+    </div><!-- End row -->
+  </div><!-- End main tab-content -->
+</body>
+<script>
+var text;
+ //navigator.clipboard.writeText("このテキストをクリップボードBBBに書き込む");
+
+navigator.permissions.query({name: "clipboard-read"}).then(result => {
+  // クリップボードの読み取りが許可されているか、またはプロンプトによって
+  // ユーザーがそれを許可する場合、処理を続行します。
+//console.log(result);
+  if (result.state == "granted" || result.state == "prompt") {
+                navigator.clipboard.readText()
+                    .then(text => {
+document.getElementById("texx").innerHTML=text;
+console.log('clipboard text=',text,'text leng=',text.length);
+                        //my code to handle paste
+                    })
+                    .catch(err => {
+                        console.error('Failed to read clipboard contents: ', err);
+                    });
+		}
+
+});
+
+</script>
+</html>

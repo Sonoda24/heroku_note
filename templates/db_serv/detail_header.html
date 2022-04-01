@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SmartWorks</title>
+    <!-- jQuery  -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+            crossorigin="anonymous"></script>
+
+    <!-- BootStrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+
+    <!-- App JS  -->
+    <script src="/static/js/Select_comb.js"></script>
+    <script type="text/javascript" src="{% static 'js/cmanCP_v091.js' %}"></script>
+
+    <!-- BootStrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/css/app.css">
+
+    <!-- FontAwesome CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+          integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP"
+          crossorigin="anonymous">
+    <style>
+        body {
+            margin: 0;
+            width: 100%;
+            height: 1000px;
+        }
+        
+        .tool {
+            position: absolute;
+	    left: 20px; top: 0px;
+  	    display: flex;
+        }
+#canvasmenu {
+  position: absolute;
+  left: 20px; top: 20px;
+  list-style: none;
+  display: flex;
+}
+#canvasmenu li {
+  width: 20px;
+  text-align: center;
+  background-color: #f5f5f5;
+  height: 20px;
+  line-height: 20px;
+  margin-right: 2px;
+}
+.Thtm {
+  position: absolute;
+  left: 0px; top: 0px;
+  padding:0 10px 0 10px;
+  width: 1200px;
+  height: 2000px;
+}
+.Tvis {
+  position: absolute;
+  left: 0px; top: 0px;
+  padding:0 10px 0 10px;
+  width:1000px;
+  height:1000px;
+  z-index: 30;
+  background-color:"red";
+  opacity: 0.;  
+}
+.canv {
+  z-index:20;
+  padding:0 10px 0 10px;
+  width:1000px;
+  position: absolute;
+  left: 10px; top:50px;
+    opacity: 0.;  
+}
+
+#trig1{
+	height:25px;
+        background-color:#ffffdd;
+}
+#trig2{
+	height:25px;
+        background-color:#ffffdd;
+}
+    </style>
+</head>

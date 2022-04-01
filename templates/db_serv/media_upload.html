@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta http-equiv="CONTENT-TYPE" content="text/html; charset=utf-8" />
+<title>ファイルアップロード</title>
+</head>
+<body>
+    <h1>ファイルをアップロード</h1>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <button type="submit">送信</button>
+    </form>
+
+    {% if download_url %}
+        <a href="{{ download_url }}">{{ download_url }}</a>
+    {% endif %}
+</body>
+</html>

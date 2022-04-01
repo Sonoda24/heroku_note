@@ -1,0 +1,151 @@
+﻿{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>SVG Editor</title>
+  <meta charset="utf-8">
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+
+<!--Bootstrap４を３に変え下記３行の変更でBottomメニュー可能となる-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <!-- link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" -->
+  <link rel="stylesheet" href="{% static 'icomoon/style.css' %}">
+  <!-- script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script -->
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <!-- script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/1.5/canvg.js"></script>
+  <script type="text/javascript" src="{% static 'js/cmanCP_v091.js' %}"></script>
+  <script src="/static/js/main.js"></script>
+    <style>
+* { 
+    margin: 0px; 
+    padding: 0px; 
+}
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 1000px;
+        }
+	.container-fluid {
+            margin: 0;
+            padding: 0;
+	}
+        .row {
+            margin: 0;
+            padding: 0;
+        }
+        nav.mt-3 {
+	    margin-top: 0 !important;
+	    padding: 0;
+        }
+        .tool {
+  	    display: flex;
+        }
+        .navbar {
+	    height: 30px;
+	    min-height: 30px;
+	}
+#canvasmenu {
+  position: absolute;
+  left: 20px; top: 25px;
+  list-style: none;
+  display: flex;
+}
+#canvasmenu li {
+  width: 20px;
+  text-align: center;
+  background-color: #f5f5f5;
+  height: 20px;
+  line-height: 20px;
+  margin-right: 2px;
+}
+.Thtm {
+  position: absolute;
+  left: 0px; top: 0px;
+  padding:0 0px 0 0px;
+  width: 1200px;
+  height: 2000px;
+  outline: none;
+}
+.Tvis {
+  position: absolute;
+  left: 0px; top: 0px;
+  padding:0 0px 0 0px;
+  width:1000px;
+  height:1000px;
+  z-index: 30;
+  background-color:"red";
+  opacity: 0.;
+  outline: none;
+}
+.canv {
+  z-index:20;
+  padding:0px;
+  left:0px;
+  margin:0px;
+  width:1000px;
+  position: absolute;
+  opacity: 0.;  
+}
+
+#trig1{
+	height:25px;
+        background-color:#ffffdd;
+}
+#trig2{
+	height:25px;
+        background-color:#ffffdd;
+}
+
+/* PopUp Window に関する部分　*/
+.popwindow {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    width: 300px;
+    padding: 15px;
+    background-color: white;
+    border: solid 1px #999999;
+    box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.3);
+}
+.popwindow .popwindow-title {
+    cursor: move;
+    margin: -15px -15px 10px;
+    padding: 10px;
+    color: #fff;
+    background-color: #333;
+    border-bottom: solid 1px black;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.popwindow .popwindow-content {
+    margin-bottom: 10px;
+    padding: 5px;
+}
+.popwindow .popwindow-buttons {
+    text-align: center;
+}
+.popwindow .popwindow-buttons p {
+    display: inline-block;
+}
+.popwindow .popwindow-buttons input {
+    cursor: pointer;
+    width: 80px;
+    padding: 5px 0;
+    border: solid 1px #034472;
+    background-color: #1885d1;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.55);
+    font-weight: bold;
+}
+.popwindow .popwindow-buttons input:hover {
+    border-color: #0a7792;
+    background-color: #17adde;
+}
+    </style>
+</head>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>ShowAll</title>
+    </head>
+    <body>
+
+<h2>Your Album</h2>
+
+{% for image in images %}
+    <img src='{{ MEDIA_URL }}{{image.photo}}' width=100>
+    <p>{{ image.description }} {{ MEDIA_URL }}{{image.photo}} {{image.uploaded_at}} </p>
+{% endfor %}
+    </body>
+</html>

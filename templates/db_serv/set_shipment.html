@@ -1,0 +1,333 @@
+{% include 'db_serv/index_header.html' %}
+<div class="card shadow rounded">
+  <button id="save_script" style="width:120px;">Save Script</button>
+<form>
+	<label>試用期限:<input type="text" id="limit_date" value="" style="width:60px;" /></label>
+  <input type="submit" onclick="set_limit_date()" value="送信" />
+</form>
+</div>
+
+<!-- script>
+//Websocket
+    var uri = 'ws://smartworks.mydns.jp:8008/ws';
+
+    window.onload = function () {
+        connection = new WebSocket(uri);
+        connection.onopen = onOpen;
+        connection.onmessage = onMessage;
+    }
+
+    function onOpen(event) {
+        console.log("Connect successful!");
+
+        prepareSend('message first');
+	prepareSend('message second');
+        prepareSend('message third');
+
+    }
+
+    function onMessage(event) {
+        //Incoming data
+        console.log(event.data);
+        addRow(event.data);
+    }
+
+    function websocketSend(data) {
+        //Send data
+        connection.send(data);
+    }
+
+    function prepareSend(value) {
+        if (value != "") {
+            websocketSend(value);
+        }
+    }
+
+    function addRow(data){
+	console.log('from server= ',data);        
+    }
+</script -->
+<script>
+var result;
+var rest_days;
+var exe_script01='';
+
+var aa=10;
+var bb=20;
+
+   function get_common(n_rec){
+	var c_data='';
+	rec_num=String(n_rec);
+		
+        	$.ajax({
+            		url: "/db_serv/get_script/",
+            		async:false,
+            		data: {
+				"rec_num":rec_num,
+				},
+            		dataType: 'json'
+        		})
+        	.done((data) => {
+            		//結果が帰ってきたら、表示します。
+console.log('**Ajax Returned result=',data);
+			c_data=data['script'];
+			c_data=unescapeHtml(unescape(c_data));
+console.log('length,script=',c_data.length,c_data);
+        		});
+	return c_data;
+	}
+
+   function set_common(c_data,name){
+	var c_common = document.createElement('script');
+	c_common.setAttribute('id', name);
+	c_common.innerHTML =c_data ;
+//      c_common.innerText =c_data ;
+//      c_common.textContent = c_data;
+        document.body.appendChild(c_common);
+	}
+
+function my_confirm(n) {
+	var exe_script01=get_common(n);
+	set_common(exe_script01,'exe01');
+	var script00=document.getElementById('exe01');
+	script00.remove();
+	}
+
+function escapeHtml(convertString) {
+    if (typeof convertString !== 'string') return convertString;
+ 
+    var patterns = {
+        '<'  : '&lt;',
+        '>'  : '&gt;',
+        '&'  : '&amp;',
+        '"'  : '&quot;',
+        '\'' : '&#x27;',
+        '`'  : '&#x60;'
+    };
+ 
+    return convertString.replace(/[<>&"'`]/g, function(match) {
+        return patterns[match];
+    });
+};
+function unescapeHtml(target) {
+    if (typeof target !== 'string') return target;
+ 
+    var patterns = {
+        '&lt;'   : '<',
+        '&gt;'   : '>',
+        '&amp;'  : '&',
+        '&quot;' : '"',
+        '&#x27;' : '\'',
+        '&#x60;' : '`'
+    };
+ 
+    return target.replace(/&(lt|gt|amp|quot|#x27|#x60);/g, function(match) {
+        return patterns[match];
+    });
+};
+//
+//使用期限付きのLicense付与の設定とcheck機能を埋め込み
+//
+function setDate_To(gdata) {
+	var value='';
+	for(let i=0 ;i<1000;i++) {
+		value += Math.floor( Math.random() * 10 );
+		}
+	for(let k=0;k<10;k++) { 
+		if(k==4) {
+			sp=6*k;
+			char1=value.substr(sp, 6);
+			num1=Number(char1.slice(-1));
+console.log('char1,num1',char1,num1);
+			}
+		}
+	char2=value.substr(6*num1, 6);
+	num2=Number(char2.slice(-3));
+console.log('char2,num2',char2,num2);
+
+	if(gdata=='') {
+		var date = new Date();
+//試用期限を設定　Date()関数は1月が0となっていることに注意
+		var yy = ('0'+(date.getFullYear())).slice(-2);
+		var mm = ('0' + (date.getMonth() + 6)).slice(-2);
+		var dd = ('0' + date.getDate()).slice(-2);
+		var yymmdd=yy+mm+dd;
+		}
+	else {
+		var yymmdd=gdata;
+		}
+
+console.log('date=',date,yymmdd);
+
+	var before = value.slice(0, num2 - 1);
+	var after = value.slice(num2-1 + yymmdd.length);
+    	value = before + yymmdd + after;
+
+	char3=value.substr(num2, 6);
+console.log('replaced=',char3);
+
+return value;
+}
+
+//
+//試用期限のDBへの書き込み
+//
+   function setDate_To_Db(n_rec,value){
+			
+	rec_num=String(n_rec);
+        	$.ajax({
+            		url: "/db_serv/update_sys/",
+            		async:false,
+            		data: {
+				"rec_num":rec_num,
+				"script":value,
+				},
+            		dataType: 'json'
+        		})
+        	.done((data) => {
+            		//結果が帰ってきたら、表示します。
+console.log('**Ajax Returned result=',data);
+        		});
+	}
+//
+//ソース隠蔽用のscriptレーコードのDB save
+//ソースは<textarea>タグにid名を付けて準備する
+//
+   function generate_source(rec,tagn){
+		var origin = document.getElementById(tagn);
+		var src_script=origin.innerHTML;
+console.log('length & script=',src_script.length,src_script);
+		var save_script=escapeHtml(escape(src_script));
+		n_rec=String(rec);
+		
+        	$.ajax({
+            		url: "/db_serv/update_sys/",
+            		async:false,
+            		data: {
+				"rec_num":n_rec,
+				"script":save_script,
+				},
+            		dataType: 'json'
+        		})
+        	.done((data) => {
+            		//結果が帰ってきたら、表示します。
+console.log('**Ajax Returned result=',data);
+        		});
+		}
+
+   function prepare_script(n_rec){
+	var script='';
+	rec_num=String(n_rec);
+		
+        	$.ajax({
+            		url: "/db_serv/get_script/",
+            		async:false,
+            		data: {
+				"rec_num":rec_num,
+				},
+            		dataType: 'json'
+        		})
+        	.done((data) => {
+            		//結果が帰ってきたら、表示します。
+console.log('**Ajax Returned result=',data);
+			script=data['script'];
+			script=unescapeHtml(unescape(script));
+console.log('length,script=',script.length,script);
+        		});
+	return script;
+	}
+//
+function set_limit_date(){
+	var limit_date=$("#limit_date").val();
+console.log(limit_date);
+
+console.log('initail Date Set start');
+	var value=setDate_To(limit_date);
+	setDate_To_Db(1,value);
+
+	my_confirm(2);    //script02のテスト
+	my_confirm(3);    //script03のテスト
+alert('stop');
+
+   }
+window.onload = function(){
+
+save_script.onclick = function() {
+console.log('Save script start');
+
+	generate_source(2,'script02');
+	generate_source(3,'script03');
+
+	}
+//
+}
+</script>
+<textarea id='script02'  style="display:none;" >
+	console.log('javascript start');
+function add(a1,b1){
+	var c1=a1+b1;
+	return c1;
+	}
+console.log(' aa bb=',aa,bb);
+   cc=add(aa,bb);
+	console.log(' a1 b1 c1=',aa,bb,cc);
+</textarea>
+<textarea id="script03" style="display:none;" >
+   function check_period(n_rec){
+	var script='';
+	var limit_date;
+	rec_num=String(n_rec);
+		
+        	$.ajax({
+            		url: "/db_serv/get_script/",
+                        async:false,
+            		data: {
+				"rec_num":rec_num,
+				},
+            		dataType: 'json'
+        		})
+        	.done((data) => {
+            		//結果が帰ってきたら、表示します。
+console.log('**Ajax Returned result=',data);
+			script=data['script'];
+        		});
+	return script;
+	}
+function check_date(result) {
+	k=4;
+  	char1=result.substr(k*6, 6);
+  	num1=Number(char1.slice(-1));
+console.log('char1,num1',char1,num1);
+
+  	char2=result.substr(6*num1, 6);
+  	num2=Number(char2.slice(-3));
+console.log('char2,num2',char2,num2);
+
+  	limit=result.substr(num2-1,6);
+console.log(limit);
+
+	var yy=parseInt('20'+limit.slice(0,2));
+	var mm=parseInt(limit.slice(2,4));
+	var dd=parseInt(limit.slice(4));
+console.log('yymmdd=',yy,mm,dd);
+	var date1=new Date(yy,mm,dd);
+	var date2 = new Date();
+	var rest_days=Math.round((date1-date2)/86400000);
+console.log('length,limit_date=',limit,'rest day=',rest_days);
+
+	if(rest_days<300) {
+		var coment="試用期限は残り "+rest_days+"日です。";
+		alert(coment);
+		}
+	if(rest_days<0) {
+		alert('試用期限は終了しました。');
+		var stag = document.getElementById("script_xx");
+		stag.remove();
+		}
+
+	return rest_days;
+	}
+   result=check_period(1);
+   var rest_days=check_date(result);
+</textarea>
+{% include 'db_serv/footer.html' %}

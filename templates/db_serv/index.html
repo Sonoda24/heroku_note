@@ -1,0 +1,71 @@
+{% include 'db_serv/index_header.html' %}
+<div class="card shadow rounded">
+  <div class="row"><!--　行を変える　-->
+  </div>
+</div>
+<!-- script>
+//Websocket
+    var uri = 'ws://smartworks.mydns.jp:8008/ws';
+
+    window.onload = function () {
+        connection = new WebSocket(uri);
+        connection.onopen = onOpen;
+        connection.onmessage = onMessage;
+    }
+
+    function onOpen(event) {
+        console.log("Connect successful!");
+
+        prepareSend('message first');
+	prepareSend('message second');
+        prepareSend('message third');
+
+    }
+
+    function onMessage(event) {
+        //Incoming data
+        console.log(event.data);
+        addRow(event.data);
+    }
+
+    function websocketSend(data) {
+        //Send data
+        connection.send(data);
+    }
+
+    function prepareSend(value) {
+        if (value != "") {
+            websocketSend(value);
+        }
+    }
+
+    function addRow(data){
+	console.log('from server= ',data);        
+    }
+</script -->
+<script>
+//
+//function jump to url test
+function shutdown() {
+console.log('jump to URL test');
+alert('stop');
+//	make_url(String(25));
+
+	const flag = true;
+	try {
+	    if (flag) {
+        	throw new Error('終了します');
+    		}
+    	console.log('実行されないコード');
+
+	} catch (e) {
+    		console.log(e.message);
+if (window === window.top) {
+console.log('It is a top-level browsing context and history=',history.length);
+	}
+		window.close();
+		}
+   }  //function chara_size end
+//
+</script>
+{% include 'db_serv/footer.html' %}

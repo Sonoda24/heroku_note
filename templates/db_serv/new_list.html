@@ -1,0 +1,1040 @@
+﻿{% include 'db_serv/list_header.html' %}
+  <div class="main tab-content"><!-- Start main tab-content -->
+    <div class="tab-pane" id="tab1"><!-- Start tab1 -->
+     <div class="row">
+	<!-- メインメニュー -->
+	<nav class="navbar-fixed-bottom">
+	<ul  class="nav nav-pills" >
+		<li class="nav-item" id="menuB01"><a class="bg-primary" href="#!" onclick="check_prev()">Prev</a></li>
+		<li class="nav-item" id="menuB02"><a class="bg-primary" href="#!" onclick="check_next()">Next</a></li>
+		<li class="nav-item" id="menuB05"><a class="bg-primary" onclick="make_url(Ed_recnum)">編集</a></li>
+		<!-- li class="nav-item" id="menuB07"><a class="nav-link" href="#!" onclick="submit_del()">削除</a></li -->
+		<!-- li class="nav-item" id="menuB08"><a class="nav-link" href="#" onclick="window.history.back(); return false;">戻る</a></li -->
+		<li class="nav-item" id="menuB08"><a class="bg-primary" href="{% url 'new_list' %}">戻る</a>
+	</ul>
+	</nav>
+
+		<div id="main">
+        	  <svg id="mesh_canv" class="canv" width="1000" height="1000" version="1.1" xmlns="http://www.w3.org/2000/svg" >
+	    	     <defs>
+	      		<marker id="start_arw" viewBox="-10 -3 10 6" refX="-10" refY="0" markerWidth="10" markerHeight="6" orient="auto">
+	        	   <path d="M -10 0 L 0 -3 L 0 3 Z"/>
+	      		</marker>
+	      		<marker id="end_arw" viewBox="0 -3 10 6" refX="10" refY="0" markerWidth="10" markerHeight="6" orient="auto">
+	        	   <path d="M 0 -3 L 0 3 L 10 0 Z"/>
+	      		</marker>
+	    	     </defs>
+		  </svg>
+        	  <svg id="chain" class="canv" style="display:none;" width="100%" height="1200px" version="1.1" xmlns="http://www.w3.org/2000/svg" >
+		  </svg>
+	  	  <svg id="myCanvas" class="canv" width="1000" height="1000" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	  	  </svg>
+	  	  <div class="Tvis" id="texx" contenteditable="false" width="100%" height="100%"></div>
+		</div>
+
+     </div><!-- End row -->
+     <button id="set_poppage" style="display:none;">dialog</button>
+    </div><!-- End tab1 -->
+    <div class="tab-pane active" id="tab2"><!-- Start tab2 -->
+     <div class="row">
+	<!-- ニュース（中央カラム） -->
+	<!-- nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+	<ul class="navbar-nav" -->
+	<nav>
+    	<ul class="nav nav-pills" style="text-align: left; display: inline-block; font-size: 16px;font-weight:bold; ">
+		<li id="menu01"><a class="bg-primary" href="#!" onclick="popup_search()">検索</a></li>
+                <li id="menu02"><a class="bg-primary" href="#!" onclick="return check_checkbox();">抽出</a></li>
+		<li class="nav-item" id="menu03"><a class="bg-primary" href="#" onclick="go_to_edit()">編集</a></li>
+		<li class="nav-item" id="menu04"><a class="bg-primary" href="#" onclick="window.history.back(); return false;">戻る</a></li>
+		<li class="nav-item" id="menu06"><a class="bg-primary" style="margin-left:30px;" href="#" onclick="return del_checkbox()">削除</a></li>
+	</ul>
+		<div class="pagination" style="margin-left:30px; font-size: 20px; font-weight:bold;">
+    			<a class="prev" onclick="prev_page()" href="#">&lt; 前へ</a>
+    			<div id='page_range' style="text-align: left; display: inline-block;">ページ</div>
+    			<a class="next" onclick="next_page()" href="#">次へ &gt;</a>
+  		</div>
+	</nav>
+	<div id="news" style="width:100%;height:430px;float:left; overflow-y:scroll;overflow-x:scroll;">
+	  <!-- Js用の新テーブルの設定（最初の1行までとして2行目以降はCopyして作成する -->
+	  <table id="my_db">
+		<thead>
+		  <tr>
+	   	    <th>選</th>
+	   	    <th>課題名</th>
+	   	    <th>大分類</th>
+	   	    <th>中分類</th>
+	   	    <th>小分類</th>
+	   	    <th>登録日</th>
+	   	    <th>名称</th>
+		  </tr>
+   		</thead>
+   		<tbody id="my_db-tbody">
+
+		</tbody>
+	</table>
+      </div><!-- news -->
+     </div><!-- End row -->
+    </div><!-- End tab2 -->
+  </div><!-- End main tab-content -->
+		<!-- JavaScriptはbody終了タグの直上に配置します -->
+		<!-- script src="http://code.jquery.com/jquery-1.9.1.min.js"></script -->
+		<!-- script src="js/tabnav_ex01.js"></script -->
+<script>
+//　My_Indexモデルのixdata_n　よりコンボデータを作成する
+   var gDataCombobox = [{ id: 0, value: "" ,pk:0,nn:0}];
+   var gDataComboboxA = [{ id: 0, value: "" ,pk:0,nn:0}];
+   var gDataComboboxB = [{ id: 0, value: "" ,pk:0,nn:0}];
+   var gDataComboboxC = [{ id: 0, value: "" ,pk:0,nn:0}];
+   var gDataComboboxD = [{ id: 0, value: "" ,pk:0,nn:0}];
+   var edit_mode="Search"
+   var db_rec_num=[];
+   var del_rec=[];
+   var Ed_recnum;
+   var Page_num=1;
+   var view_text='';
+   var svg_field='';
+   var my_header='';
+   var header_term;
+   var Svg_fig_count=0;
+   var pop_dialog=0;
+   var key_level=0;
+   var sys_parms=["1,0,''","0,0,''","0,0,''","0,0,''","0,0,''"];
+
+   var svg_now='svg_00';
+   var container;
+   var org_container;
+
+function getCookie(name) {
+    var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+        }
+    }
+       return cookieValue;
+}
+
+var csrftoken = getCookie('csrftoken');
+
+function csrfSafeMethod(method) {
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+$.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+        }
+});
+
+   	mode_change(edit_mode);
+	page_n='0';
+	var parms=set_parms(sys_parms);
+	get_new_list(key_level,page_n,parms);
+
+    var first_container = document.getElementById('texx');
+    var org_container = document.getElementById('myCanvas');
+    var NS = org_container.getAttribute('xmlns');
+
+function mode_change(edit_mode) {
+//Searchタブの処理
+//
+　　if(edit_mode=="Search") {
+        nodisp=document.getElementById('tab1');
+        nodisp.style.display='none';
+        disp=document.getElementById('tab2');
+        disp.style.display='block';
+//	my_confirm(3);
+	}
+//
+//Editタブの処理
+//
+　　　else {
+       	nodisp=document.getElementById('tab2');
+       	nodisp.style.display='none';
+       	disp=document.getElementById('tab1');
+       	disp.style.display='block';
+console.log('**tab1');
+	}
+
+ }
+
+function make_group(fig){
+	var group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+	var fig_id='g'+(Date.now()).toString();
+	group.setAttribute('id', fig_id);
+	group.setAttribute('fig', fig);
+	container.appendChild(group);
+console.log('make_group=',group,fig_id);
+	return {group:group,fig_id:fig_id};
+   }
+
+var presp_range;
+var presp_list;
+
+      // Ajax通信を定義する
+      function get_new_list(level,page,parm){
+console.log('*** Enter to get index and page_data required  ***');
+        $.ajax({
+            url: "/db_serv/get_new_list/",
+	    type:'POST',
+            async:true,
+            data: {
+		"level":level,
+		"page":page,
+		"parms":parm,
+		},
+            dataType: 'json'
+        })
+        .done((data) => {
+            //結果が帰ってきたら、表示します。
+		console.log('**Ajax Returned result=',data);
+		var key_elem=data['key_tags'].split('|<=>|');
+		console.log('keys=',key_elem);
+		gDataCombobox = [{ id: 0, value: "" ,pk:0,nn:0}];
+		for(var i=0;i<key_elem.length;i++) {
+			var dkey=key_elem[i].split(',');
+			var item = new Object();
+			item.id = i; // input value
+			item.value = dkey[0];
+			item.pk=dkey[1];
+			item.nn=dkey[2];
+			gDataCombobox.push(item)
+			}
+		key_level=Number(data['level']);
+		
+console.log('level=',data['level']);
+		presp_range=data['page_range'];
+		presp_list=data['results'];
+		page_n=data['page_n'];
+		Page_num=page_n;
+		return set_poppage(page_n);
+        })
+	.fail((jqXHR, textStatus, errorThrowndata) => {
+alert('Ajax get index error');
+         });      
+     };
+
+
+/*  index dataの要求　　　　*/
+function ret_index(){
+	gDataComboboxA=gDataCombobox;
+console.log('gDataComboboxA=',gDataComboboxA);
+   	var box1 = new SelectBox("comboboxA");
+   	box1.registOption(new SelectOption(null, "課題名", "0", "color:gray;"));
+   	for (var i=1; i<gDataComboboxA.length; i++) {
+		box1.registOption(new SelectOption(null, gDataComboboxA[i].value , String(gDataComboboxA[i].id)));
+		}
+	//上で定義したcomboboxA（box1）のObject骨格をつくる
+  	box1.make(null);
+	console.log('comboboxA=',comboboxA);
+
+	var box2 = new SelectBox("comboboxB");
+	box2.registOption(new SelectOption(null, "大分類", "0", "color:gray;"));
+	box2.make(null);　
+
+	var box3 = new SelectBox("comboboxC");
+	box3.registOption(new SelectOption(null, "中分類", "0", "color:gray;"));
+  	box3.make(null);
+
+	var box4 = new SelectBox("comboboxD");
+	box4.registOption(new SelectOption(null, "小分類", "0", "color:gray;"));
+  	box4.make(null);
+   }  //End of function get_topindex
+
+function set_poppage(page_n){
+console.log('**set_poppage enter key_level=',key_level);
+		 switch (key_level){
+      			case 0:
+				ret_index();
+				break;
+      			case 1:
+ 				ret_chngcombA();
+				break;
+      			case 2:
+ 				ret_chngcombB();
+				break;
+	  		case 3:
+ 				ret_chngcombC();
+				break;
+	  		case 4:
+				break;
+			default:
+				break;
+			}
+	make_table(page_n);
+	//post_ajax(key_level,Page_num);
+	}
+
+function prev_page() {
+    //event.preventDefault();
+//console.log('Prev_Page clicked');
+    Page_num=Math.max(1,Number(Page_num)-1);
+    var parms=set_parms(sys_parms);
+    get_new_list(key_level,String(Page_num),parms);
+   }
+
+function next_page() {
+    //event.preventDefault();
+    Page_num=Math.min(Number(Page_num)+1,Number(Page_max));
+//console.log('***Next_Page =',Page_num);
+    var parms=set_parms(sys_parms);
+    get_new_list(key_level,String(Page_num),parms);
+   }
+
+function post_reject() {
+console.log('エラーが発生し、データが取得できませんでした');
+	}
+
+function make_table(page_n) {
+		Page_max=presp_range.slice(-1)[0];
+		var page_ran="";
+		page_ran=" ページ　"+page_n+'/'+String(Page_max)+" ";
+//console.log('page_range=',page_ran);
+		target = document.getElementById("page_range");
+            	target.innerHTML = page_ran;
+//console.log('Page max=',presp_range.slice(-1)[0]);
+		db_rec_num=[];
+                $('#my_db-tbody').html('')
+                $.each(presp_list, function(i, val) {
+	        //最終行に"<tr><td>～</td></tr>"の文字列を追加
+	        var str = "";
+	        str += "<tr>";
+		str += "<td bgcolor='#99CC00' align='center'><input type='checkbox' class='checkboxes' onclick='catch_boxes(this.index)' /></td>";
+//		str += "<td bgcolor='#fff' align='center'><input type='checkbox' disabled class='checkboxes' /></td>";
+	        //str += "<td>"+val.no+"</td>";
+	        str += "<td>"+val.theme+"</td>";
+	        str += "<td>"+val.bunrui1+"</td>";
+	        str += "<td>"+val.bunrui2+"</td>";
+	        str += "<td>"+val.bunrui3+"</td>";
+	        str += "<td>"+val.day_regist+"</td>";
+	        str += "<td>"+unescapeHtml(unescape(val.overview))+"</td>";
+	        str += "</tr>";
+	        $('#my_db-tbody').append(str);
+		db_rec_num.push(val.no);
+               })
+		mend_table();
+//console.log('tbl recnum=',db_rec_num);
+	}
+
+function mend_table() {
+console.log('mend table del_rec=',del_rec);
+//tbodyノードを取得し、次にCopyしたいテーブル<tr>行objectを取り出す
+  	var tbody = document.getElementById('my_db-tbody');
+	var len=db_rec_num.length;
+	var ns=del_rec.length;
+	if(ns==0) return;
+
+	for(let n=0;n<len;n++) {
+// 出力データの1行目はtr_first実体に割り付ける
+  		var tr_first = tbody.childNodes[n];　　　//　childNodes[0]はシステム的な定義で出力用はchildNodes[1]
+//console.log('first_line=',tr_first);
+                  //tdエレメントを生成して　tdの中に入れたいモノをセット 
+                  var td = tr_first.childNodes[0];
+//console.log('del_num=',ns,'rec_num=',db_rec_num[n],'td=',td.innerHTML);
+		for(let k=0;k<ns;k++) {
+			if(db_rec_num[n]==del_rec[k]) {
+				td.innerHTML="<input type='checkbox' disabled class='checkboxes' />";
+console.log('replaced rec_num=',db_rec_num[n],'td=',td.innerHTML);
+				}
+			}
+
+		}
+	}
+
+function svgtag_decompose(nums,header) {
+	var elem=header.split(';');
+console.log('elems leng=',elem.length,elem);
+//cn_svgs = [{ name: "" ,pk:0}];
+	var cn_svgs=[];
+	for(var i=0;i<elem.length-1;i++) {
+		var value=elem[i].split(',');
+		cn_svgs.push({name: value[0],pk: value[1]});
+		}
+	return cn_svgs;
+	}
+
+function cntags_compose(){
+	tags='';
+	if(cnsvg_nums>0) {
+		for(var i=0;i<cnsvg_nums;i++) {
+		tags=tags+cnsvg_tags[i].name+','+String(cnsvg_tags[i].pk)+';';
+			}
+		}
+	return tags;
+	}
+
+//My_CnSvgレコードのget
+function get_cnsvg(cnsvg_pk) {
+console.log('*** Get Chain_Svg part Entered  ***');
+console.log('cnsvg_pk=',cnsvg_pk);
+
+        $.ajax({
+            url: "/db_serv/get_cnsvg/",
+            async:false,
+            data: {
+		"rec_number":cnsvg_pk,
+		},
+            dataType: 'json'
+        })
+        .done((data) => {
+            //結果が帰ってきたら、表示します。
+		wfcn_header=data['header'];
+		cnsvg_field=data['svg_field'];
+console.log('**Ajax Returned result=',data);
+        });
+   }
+
+function expand_svg(svtex,svg_tagn) {
+　　　const svg = document.getElementById(svg_tagn);
+      if(svtex!=''){
+	  	var n_s=0;
+	  	var i=0;
+	  	var n_last=svtex.length;
+	  	do {
+             		i = i + 1;
+      	     		n_e = svtex.indexOf('|<=>|',n_s );
+	     		if(n_e<0) {
+				n_e=n_last;
+				}	     
+console.log('num=',i,' n_start and n_last=',n_s,n_e,n_last);
+	     		text_n=svtex.substring(n_s , n_e);
+console.log('num= ',i,' tex= ',text_n)
+	     		n_s=n_e+5;
+             		const domParser = new DOMParser();
+　　	     		parsedSVGDoc = domParser.parseFromString(text_n, 'image/svg+xml');
+   	    		 parsedSVG = parsedSVGDoc.childNodes[0];
+　　	     		svg.appendChild(parsedSVG);
+	     		svg.lastChild.outerHTML=text_n
+	     		Svg_fig_count+=1;
+console.log('***SVG fig count= ',Svg_fig_count)
+	     		} while (n_s < n_last);
+	     	//first childをcontainerとする
+console.log('***open g01 group as container');
+	     	container=svg.children[1];
+console.log('**parent= ',svg,'container=',container);
+		var fig_id=container.getAttribute('id');
+console.log('container id=',fig_id);
+	  	}
+	else {　//読み込むsvgデータがない場合はid=g01の<g>タグを作成してcontainerとする。
+console.log('***make g01 group as container');
+		container=svg;
+		var {group,fig_id}=make_group('top');
+		group.setAttribute('class', 'top');
+		container=group;
+		}
+    }//End of expand_svg
+
+function svg_tag_add(newtag) {
+	var element = document.getElementById( "svg_tag_menu" ) ;
+	var newElement = new Option(newtag,newtag) ;	// <option value="baz">選択肢3</option>
+	element.add( newElement ) ;
+}
+
+function get_pagedata(pk_num) {
+console.log('*** get_rec require　Entered  ***');
+        $.ajax({
+	    type:'GET',
+            url:"/db_serv/get_rec/",
+            data: {
+                rec_number : pk_num, //page_number
+            	},
+	    dataType:'json',
+        })
+        .done((data) => {
+            //結果が帰ってきたら、表示します。
+		console.log('**Ajax Returned result=',data);
+		view_text=data.view_tex;
+		svg_field=data.svg_field;
+		my_header=data.header;
+	     display_doc();
+        });
+//   mode_change(edit_mode);
+   }  //End function get_pagedata
+
+function del_pagedata(pk_num) {
+console.log('*** delete record required  ***');
+        $.ajax({
+	    type:'GET',
+            url:"/db_serv/del_rec/",
+            data: {
+                rec_number : pk_num, //page_number
+            	},
+	    dataType:'json',
+        })
+        .done((data) => {
+            //結果が帰ってきたら、表示します。
+		console.log('**Ajax Returned result=',data);
+        });
+	del_rec.push([pk_num]);
+	mend_table();
+   }  //End function del_pagedata
+
+function display_doc() {
+//
+//ブラウザ表示用データの準備(DbデータのDjango（Python）からの受取りとinlinesvgへの書き込み　
+//
+console.log('tex=',view_text);
+      var texxx=unescapeHtml(unescape(view_text));
+      document.getElementById("texx").innerHTML=texxx;
+//　　　const svg = document.querySelector('#myCanvas');
+//      clear_allchild(svg);
+      svg_tex=unescapeHtml(unescape(svg_field));
+      my_header=unescapeHtml(unescape(my_header));
+      header_term=my_header.split('|<=>|');
+//console.log('header=',header_term);
+
+//document text部のdivsvgタグのcheckと再編集
+      	var fst_tag=first_container.firstChild;
+console.log('First node=',fst_tag.nodeName);
+	var idname=''
+	if(fst_tag.nodeName=='DIV') idname=fst_tag.getAttribute('id');
+	if((fst_tag.nodeName!='DIV') || (idname!='divsvg_00')) {
+console.log('Enter to set divsvg tag',fst_tag);
+      		var cnsvg_tags=svgtag_decompose(header_term[5],header_term[6]);
+      		var cnsvg_nums=cnsvg_tags.length;
+console.log('chain svg_nums=',cnsvg_nums);
+		if(cnsvg_nums>0) {
+			var html_str=document.getElementById("texx").innerHTML;
+			while (first_container.firstChild) {
+            			first_container.removeChild(first_container.firstChild);
+	    			}
+			var text='';
+			var st_p=0;
+			var end_p=html_str.length;
+			var newtag='divsvg_00';
+			for(let i=0;i<cnsvg_nums;i++){
+				var tagn=cnsvg_tags[i].name;
+				var div_name='div'+tagn;
+				var svg_div=document.getElementById('div'+tagn);
+console.log('cnsvg tag=',tagn,div_name,svg_div);
+				
+				var {pt1,pt2}=catch_cnsvg(div_name,html_str,st_p);
+				text=html_str.substring(st_p,pt1);
+//console.log('select text=',text);
+    				var svg_div = document.createElement('div');
+    				svg_div.setAttribute('id', newtag);
+    				svg_div.setAttribute('class', 'svg');
+    				svg_div.setAttribute('level', '0');
+				//var marginLR='margin-left:'+default_margin_L+'; margin-right:'+default_margin_R+';';
+				//svg_div.setAttribute('style', marginLR);
+    				svg_div.innerHTML=text;
+				first_container.appendChild(svg_div);
+console.log(svg_div);
+				newtag=div_name;
+				st_p=pt2;
+				}
+			text=html_str.substring(st_p,end_p);
+//console.log('select text=',text);
+    			var svg_div = document.createElement('div');
+    			svg_div.setAttribute('id', newtag);
+    			svg_div.setAttribute('class', 'svg');
+    			svg_div.setAttribute('level', '0');
+			//var marginLR='margin-left:'+default_margin_L+'; margin-right:'+default_margin_R+';';
+			//svg_div.setAttribute('style', marginLR);
+    			svg_div.innerHTML=text;
+			first_container.appendChild(svg_div);
+console.log(svg_div);
+			}
+		else {                                             //Top textのみの場合
+    			//var div_parent=document.getElementById("Clone")
+    			var svg_div = document.createElement('div');
+    			var newtag='divsvg_00';
+    			svg_div.setAttribute('id', newtag);
+    			svg_div.setAttribute('class', 'svg');
+    			svg_div.setAttribute('level', '0');
+			//var marginLR='margin-left:'+default_margin_L+'; margin-right:'+default_margin_R+';';
+			//svg_div.setAttribute('style', marginLR);
+    			svg_div.innerHTML=document.getElementById("texx").innerHTML;
+console.log('only Top text=',svg_div);
+    			//div_parent.appendChild(svg_div);
+			while (first_container.firstChild) {
+            			first_container.removeChild(first_container.firstChild);
+	    			}
+			first_container.appendChild(svg_div);
+			}
+		}
+
+      my_confirm(5);
+console.log('**doc loaded at my_confirm(5)');
+console.log('org_container=',org_container,' container=',container);
+
+    var NS = container.getAttribute('xmlns');
+//
+//②Display document (editor初期表示モードの設定）
+//
+		nodisp=document.getElementById('tab2');
+       		nodisp.style.display='none';
+       		disp=document.getElementById('tab1');
+       		disp.style.display='block';
+		document.getElementById(svg_now).style.display="block";
+		document.getElementById( "texx" ).style.zIndex ='40';
+//		document.getElementById( "texh" ).style.zIndex ='20';
+//		document.getElementById("texh").value=document.getElementById("texx").innerHTML;
+//		document.getElementById("texh").innerHTML=escapeHtml(escape(document.getElementById("texx").innerHTML));
+   } //End of function display_doc
+
+    function createRectFig(x,y,w,h) {
+	rect1=document.createElementNS('http://www.w3.org/2000/svg','rect');
+	rect1.setAttribute('x',x);
+	rect1.setAttribute('y',y);
+	rect1.setAttribute('width',w);
+	rect1.setAttribute('height',h);
+	rect1.setAttribute('stroke','blue');
+	rect1.setAttribute('fill','none');
+        rect1.setAttribute('strokeWidth','1px');
+//	container.appendChild(rect1);
+console.log(rect1)
+        return rect1;
+    }
+
+function catch_cnsvg(name,text,stp) {
+	var text_n='';
+	var point_n=0;
+	var st_a1=st_b1=st_c1=stp;
+	var st_a2,st_b2,st_c2;
+
+	var st_a2=text.indexOf(name, st_a1);
+	var st_b2=text.indexOf('<div', st_b1);
+	var st_c2=text.indexOf('</div>', st_c1);
+console.log('a =',st_a1,st_a2,'b =',st_b1,st_b2,'c =',st_c1,st_c2);
+
+	while(st_a2>st_c2) {
+		st_c1=st_b1=st_c2+6;
+		var st_b2=text.indexOf('<div', st_b1);
+	        var st_c2=text.indexOf('</div>', st_c1);
+		}
+	if(st_b2<st_a2) {
+		var pt1=st_b2;
+		var pt2=st_c2+6
+		}
+	return {pt1:pt1,pt2:pt2};
+	}
+
+function set_svg(tag) {
+
+	org_container = document.getElementById(tag);
+
+	if(org_container.querySelector('.top')==null) {
+console.log('***make g01 group as container');
+		container=org_container;
+		var {group,fig_id}=make_group('top');
+		group.setAttribute('class', 'top');
+		container=org_container.appendChild(group);
+		}
+	else {
+		container=org_container.querySelector('.top');
+		}
+console.log('change container to=',org_container,container);
+
+} //End set_svg
+
+function svg_tag_add(newtag) {
+//	var element = document.getElementById( "svg_tag_menu" ) ;
+//	var newElement = new Option(newtag,newtag) ;	// <option value="baz">選択肢3</option>
+//	element.add( newElement ) ;
+}
+
+function make_url(num){
+   //window.location.href = "{% url 'editor' 123 %}".replace(/123/,num);
+   window.open().location.href = "{% url 'editor' 123 %}".replace(/123/,num);
+}
+
+function go_to_edit(){
+   num=check_present();
+   //window.location.href = "{% url 'editor' 123 %}".replace(/123/,num);
+   window.open().location.href = "{% url 'editor' 123 %}".replace(/123/,num);
+}
+
+//検索画面 combobox ComboB onchange function
+function changeCombA() {
+  
+  var selA=document.selbox.comboboxA.selectedIndex;
+  var selA_id=document.selbox.comboboxA.value;
+  selA_value=document.selbox.comboboxA.options[selA].label;
+console.log('**SelectA',selA,selA_id,selA_value);
+console.log('gDataComboboxA=',gDataComboboxA[selA]);
+	var level=1;
+	var pk_num=gDataComboboxA[selA].pk;
+
+	if(selA_value=="課題名"){
+		key_level='0';
+		page_n='0';
+		var parms=set_parms(sys_parms);
+		get_new_list(key_level,page_n,parms);	
+		}
+	else {
+		key_level='1';
+		var page_n='0';
+		sys_parms[key_level]=pk_num+','+page_n+','+selA_value;
+		var parms=set_parms(sys_parms);
+		get_new_list(key_level,page_n,parms);
+		//get_index(level,pk_num,selA_value);
+		}
+   }
+
+function set_parms(sys_parms) {
+	var len=sys_parms.length;
+	var parm='';
+	for(var k=0;k<len;k++) {
+		parm=parm+sys_parms[k]+';';
+		}
+	return parm;
+	}
+
+function ret_chngcombA(){
+
+	gDataComboboxB=gDataCombobox;
+	var box2 = new SelectBox("comboboxB");
+	box2.registOption(new SelectOption(null, "大分類", "0", "color:gray;"));
+		for (var i=1; i<gDataComboboxB.length; i++) {
+			box2.registOption(new SelectOption(null, gDataComboboxB[i].value , String(gDataComboboxB[i].id)));
+			}
+	box2.make(null);　
+
+	var box3 = new SelectBox("comboboxC");
+	box3.registOption(new SelectOption(null, "中分類", "0", "color:gray;"));
+  	box3.make(null);
+
+	var box4 = new SelectBox("comboboxD");
+	box4.registOption(new SelectOption(null, "小分類", "0", "color:gray;"));
+  	box4.make(null);
+
+};
+
+// combobox ComboB onchange function
+function changeCombB() {
+  
+  var selB=document.selbox.comboboxB.selectedIndex;
+  var selB_id=document.selbox.comboboxB.value;
+  selB_value=document.selbox.comboboxB.options[selB].label;
+console.log('**SelectB',selB,selB_id,selB_value);
+	var pk_num=gDataComboboxB[selB].pk;
+
+	if(selB_value=="大分類"){
+		key_level='1';
+		page_n='0';
+		var parms=set_parms(sys_parms);
+		get_new_list(key_level,page_n,parms);	
+		}
+	else {
+		key_level='2';
+		var page_n='0';
+		sys_parms[key_level]=pk_num+','+page_n+','+selB_value;
+		var parms=set_parms(sys_parms);
+		get_new_list(key_level,page_n,parms);
+		//get_index(level,pk_num,selA_value);
+		}
+   }
+
+function ret_chngcombB(){
+
+	gDataComboboxC=gDataCombobox;
+console.log(gDataComboboxC);
+	var box3 = new SelectBox("comboboxC");
+	box3.registOption(new SelectOption(null, "中分類", "0", "color:gray;"));
+	for (var i=1; i<gDataComboboxC.length; i++) {
+		box3.registOption(new SelectOption(null, gDataComboboxC[i].value , String(gDataComboboxC[i].id)));
+		}
+  	box3.make(null);　
+
+  	var box4 = new SelectBox("comboboxD");
+  	box4.registOption(new SelectOption(null, "小分類", "0", "color:gray;"));
+  	box4.make(null);
+};
+// combobox ComboC onchange function
+function changeCombC() {
+  
+  var selC=document.selbox.comboboxC.selectedIndex;
+  var selC_id=document.selbox.comboboxC.value;
+  selC_value=document.selbox.comboboxC.options[selC].label;
+console.log('**SelectC',selC,selC_id,selC_value);
+	var pk_num=gDataComboboxC[selC].pk;
+
+	if(selC_value=="中分類"){
+		key_level='2';
+		var page_n='0';
+		var parms=set_parms(sys_parms);
+		get_new_list(key_level,page_n,parms);	
+		}
+	else {
+		key_level='3';
+		var page_n='0';
+		sys_parms[key_level]=pk_num+','+page_n+','+selC_value;
+		var parms=set_parms(sys_parms);
+		get_new_list(key_level,page_n,parms);
+		//get_index(level,pk_num,selA_value);
+		}
+   }
+
+function ret_chngcombC(){
+
+	gDataComboboxD=gDataCombobox;
+console.log(gDataComboboxD);
+	var box4 = new SelectBox("comboboxD");
+	box4.registOption(new SelectOption(null, "小分類", "0", "color:gray;"));
+	for (var i=1; i<gDataComboboxD.length; i++) {
+		box4.registOption(new SelectOption(null, gDataComboboxD[i].value , String(gDataComboboxD[i].id)));
+		}
+  	box4.make(null);　
+};
+function changeCombD() {
+  
+  	var selD=document.selbox.comboboxD.selectedIndex;
+  	var selD_id=document.selbox.comboboxD.value;
+  	selD_value=document.selbox.comboboxD.options[selD].label;
+console.log('**SelectD Dindex=',selD,' id= ',selD_id,' value= ',selD_value);
+	var level=4;
+	var pk_num=gDataComboboxD[selD].pk;
+
+	if(selD_value=="小分類"){
+		key_level='3';
+		page_n='0';
+		var parms=set_parms(sys_parms);
+		get_new_list(key_level,page_n,parms);	
+		}
+	else {
+		key_level='4';
+		var page_n='0';
+		sys_parms[key_level]=pk_num+','+page_n+','+selD_value;
+		var parms=set_parms(sys_parms);
+		get_new_list(key_level,page_n,parms);
+		//get_index(level,pk_num,selA_value);
+		}
+}
+
+        function set_common(code,name){
+            var script = document.createElement('script');
+	    script.setAttribute('id', name);
+	    script.innerHTML =code ;
+//            script.innerText =code ;
+//            script.textContent = code;
+            document.body.appendChild(script);
+	}
+
+   function get_common(n_rec){
+	var script='';
+	rec_num=String(n_rec);
+		
+        	$.ajax({
+            		url: "/db_serv/get_script/",
+            		async:false,
+            		data: {
+				"rec_num":rec_num,
+				},
+            		dataType: 'json'
+        		})
+        	.done((data) => {
+            		//結果が帰ってきたら、表示します。
+console.log('**Ajax Returned result=',data);
+			script=data['script'];
+			script=unescapeHtml(unescape(script));
+console.log('length,script=',script.length,script);
+        		});
+	return script;
+	}
+
+function my_confirm(n) {
+	var exe_script01=get_common(n);
+	set_common(exe_script01,'exe01');
+console.log('after set_common');
+	var script00=document.getElementById('exe01');
+console.log('exe script');
+	script00.remove();
+	}
+
+function escapeHtml(convertString) {
+    if (typeof convertString !== 'string') return convertString;
+ 
+    var patterns = {
+        '<'  : '&lt;',
+        '>'  : '&gt;',
+        '&'  : '&amp;',
+        '"'  : '&quot;',
+        '\'' : '&#x27;',
+        '`'  : '&#x60;'
+    };
+ 
+    return convertString.replace(/[<>&"'`]/g, function(match) {
+        return patterns[match];
+    });
+};
+function unescapeHtml(target) {
+    if (typeof target !== 'string') return target;
+ 
+    var patterns = {
+        '&lt;'   : '<',
+        '&gt;'   : '>',
+        '&amp;'  : '&',
+        '&quot;' : '"',
+        '&#x27;' : '\'',
+        '&#x60;' : '`'
+    };
+ 
+    return target.replace(/&(lt|gt|amp|quot|#x27|#x60);/g, function(match) {
+        return patterns[match];
+    });
+};
+</script>
+<!-- ポップアップウィンドウdraw-svg用HTML -->
+<div class="dialog" id="pop_search" title="ポップアップ検索">
+  <div class="dialog-content">
+	<form name="selbox">
+	<p><label>課題名</label><br>
+	<select id="comboboxA" onchange="changeCombA()" style="height:25px; width:180px;"></select>
+	<p><label>大分類</label><br>
+	<select id="comboboxB"  onchange="changeCombB()" style="height:25px; width:180px;"></select>
+	<p><label>中分類</label><br>
+	<select id="comboboxC"  onchange="changeCombC()" style="height:25px; width:180px;"></select>
+	<p><label>小分類</label><br>
+	<select id="comboboxD"  onchange="changeCombD()" style="height:25px; width:180px;"></select>
+	</form>
+  </div>
+</div>
+<script id='script_xx'>
+var prev_check=-1;
+function catch_boxes(value) {
+    var tbl = document.getElementById("my_db-tbody");
+console.log('Table leng=',tbl.childElementCount,tbl);
+    var nlist=tbl.childElementCount;
+    var checkbox;
+    var new_check;
+    for (var i = 0 ; i < nlist ; ++i) {
+        	checkbox=tbl.rows[i].cells[0].firstChild
+        	if (checkbox.checked) {
+			if(i==prev_check) checkbox.checked=false;
+			else new_check=i;
+			}
+	}
+	prev_check=new_check;
+console.log('prev=',prev_check);
+}
+//　checkboxがcheckされているか調べる
+function check_present() {
+    edit_mode="Edit";
+//Table表示のレコード中のものでcheckが入っているもののdataidを特定する
+    var tbl = document.getElementById("my_db-tbody");
+console.log('Table leng=',tbl.childElementCount,tbl);
+    var nlist=tbl.childElementCount;
+　　var k=0;
+    for (var i = 0 ; i < nlist ; ++i) {
+		k +=1;		//Table表示されているものの順番
+		if (k==1) {		//　何もcheckされていない場合はこれが使われる
+			ncheck=i;
+			k_table=k;
+		}
+//console.log(tbl.rows[i]);
+//console.log(tbl.rows[i].cells[0]);
+        	var checkbox = tbl.rows[i].cells[0].firstChild;
+        	if (checkbox.checked) {
+			ncheck=i;	// data_d全体（表示してないものを含む）の中のcheckされているものの順番
+			k_table=k;      // table表示の中でのcheckされているいるものの順番
+			break;
+	}
+   }
+   n_present=ncheck;
+//alert('check numb='+String(ncheck));
+console.log('rec_numb=',n_present,db_rec_num[n_present]);
+   rec_num=db_rec_num[n_present]
+   Ed_recnum=rec_num;
+   return rec_num;
+}
+
+//　checkboxがcheckされているか調べる
+function check_checkbox() {
+    edit_mode="Edit";
+    if(pop_dialog==1){
+    	$( '#pop_search' ) . dialog("close");
+	pop_dialog=0;
+	}
+    var rec_num=check_present();
+console.log('rec_num=',rec_num,db_rec_num);
+//DocumentをAjaxで読み込み表示する
+   get_pagedata(rec_num);
+}
+
+//　checkboxがcheckされてるrecordをdelete処理する
+function del_checkbox() {
+    edit_mode="Edit";
+    if(pop_dialog==1){
+    	$( '#pop_search' ) . dialog("close");
+	pop_dialog=0;
+	}
+    var rec_num=check_present();
+console.log('rec_num=',rec_num,db_rec_num);
+//DocumentをAjaxで読み込み表示する
+   del_pagedata(rec_num);
+}
+
+//　現レコードのnext表示レコードを取り出す
+function check_next() { 
+    edit_mode="Edit";
+    var tbl = document.getElementById("my_db-tbody");
+    var ncheck=n_present;
+    var nlist=tbl.childElementCount;
+console.log('present=',n_present,'table length=',nlist);
+    ncheck=n_present;
+    for (var i = n_present+1 ; i < nlist ; ++i) {
+//console.log('i=',i);
+				//Table表示されているものの順番
+		ncheck=i;	// data_dの中でtable表示されcheckされているもの
+		break;
+   }
+   n_present=ncheck;
+console.log('rec_numb=',n_present,db_rec_num[n_present]);
+   rec_num=db_rec_num[n_present]
+   Ed_recnum=rec_num;
+//DocumentをAjaxで読み込み表示する   submit_get(nums);
+   get_pagedata(rec_num);
+}
+
+//　現レコードのprev表示レコードを取り出す
+function check_prev() {
+    edit_mode="Edit";
+    var tbl = document.getElementById("my_db-tbody");
+    var ncheck=n_present;
+    var nlist=tbl.childElementCount;
+console.log('present=',n_present,'table length=',nlist);
+    ncheck=n_present;
+    for (var i = n_present-1 ; i >=0 ; --i) {
+//console.log('i=',i);
+				//Table表示されているものの順番
+		ncheck=i;	// data_dの中でtable表示されcheckされているいるもの
+		break;
+   }
+   n_present=ncheck;
+console.log('rec_numb=',n_present,db_rec_num[n_present]);
+   rec_num=db_rec_num[n_present]
+   Ed_recnum=rec_num;
+//DocumentをAjaxで読み込み表示する   submit_get(nums);
+   get_pagedata(rec_num);
+}
+
+function popup_search() {
+console.log('***popup検索');
+	var theDialog=$( '#pop_search' ) . dialog( { autoOpen: false, draggable: true, resizable: true,
+		height:400, width: 300,  position: {my: "right bottom", at: "right bottom", of: window}} );
+	//ダイアログを表示する
+	theDialog.dialog("open");
+	pop_dialog=1;
+//	$('#line_size').value="2"; jQueryでは設定できない
+//	document.getElementById( "line_size" ).value = defaultPathStyle.strokeWidth;
+//console.log($('#line_size').value);
+//	document.getElementById( "Trim_R" ).value = 10;
+//	});
+}
+// ビジーwaitを使う方法
+function sleep(waitMsec) {
+  var startMsec = new Date();
+ 
+  // 指定ミリ秒間だけループさせる（CPUは常にビジー状態）
+  while (new Date() - startMsec < waitMsec);
+}
+</script>
+{% include 'db_serv/footer.html' %}

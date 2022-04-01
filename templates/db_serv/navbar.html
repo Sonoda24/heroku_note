@@ -1,0 +1,77 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" lang="ja"><head>
+<meta charset="UTF-8" />
+<title>Sample</title>
+<style>
+.Tvis {
+  position: absolute;
+  left: 20px; top: 0px;
+  padding:0 0px 0 0px;
+  width:100%;
+  height:auto;
+  z-index: 30;
+  background-color:"red";
+  opacity: 0.;  
+}
+.canv {
+  z-index:20;
+  padding:0px;
+  left: -20px;
+  margin:0px;
+  width:100%;
+  position: absolute;
+  opacity: 0.;  
+}
+.my_button {
+  display: block;
+  width: 160px;
+  height: 36px;
+  margin: 10px 10px 10px 10px; /* 外側の時計回りの余白 */
+  text-align: center;
+  color: #fff;   /* #666; */
+  line-height: 36px;
+  text-decoration: none;
+  background-color: #69c;  /*  #efefef;  */
+  border: 1px solid #69c;  /*  #ddd;     */
+  border-radius: 5px;
+  float: left;
+}
+.my_button:hover {color:#ffffff; background:#0000cc;} /*カーソルが乗っているリンクの色*/
+
+.point_none {
+  pointer-events:none;
+}
+.point_auto {
+  pointer-events: auto;
+}
+</style></head>
+
+<body>
+        <svg id="mesh_canv" class="canv" width="1000" height="1000" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	    <defs>
+	      <marker id="start_arw" viewBox="-10 -3 10 6" refX="-10" refY="0" markerWidth="10" markerHeight="6" orient="auto">
+	        <path d="M -10 0 L 0 -3 L 0 3 Z"/>
+	      </marker>
+	      <marker id="end_arw" viewBox="0 -3 10 6" refX="10" refY="0" markerWidth="10" markerHeight="6" orient="auto">
+	        <path d="M 0 -3 L 0 3 L 10 0 Z"/>
+	      </marker>
+	    </defs>
+	</svg>
+
+
+<div class="Tvis" id="texx" contenteditable="false" width="100%" height="100%" style="z-index: 40;"><svg id="svg_00" class="canv point_none" style="display;block" width="100%" height="1200px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	<g id="g1620970993058" fig="top" class="top"><g fig="text" style="display:block;" transform="matrix(1 0 0 1 717 26)" id="t1630108547535" class="none">
+		  <text text-anchor="middle" font-size="22" style="display:block;" font-family="sans-serif" fill="#ffffff" stroke="#a6a6a6" stroke-width="8" rotate="0" paint-order="stroke" stroke-linejoin="round"><tspan x="20" y="26.4">落書き手書きで思い出す</tspan></text>
+		</g><g fig="text" style="display:block;" transform="matrix(1 0 0 1 748 142)" id="t1630108550749" class="none">
+		  <text text-anchor="middle" font-size="22" style="display:block;" font-family="sans-serif" fill="#ffffff" stroke="#a6a6a6" stroke-width="8" rotate="0" paint-order="stroke" stroke-linejoin="round"><tspan x="20" y="26.4">４階層キーワードで即座に検索</tspan></text>
+		</g><g fig="text" style="display:block;" transform="matrix(1 0 0 1 745 85)" id="t1630108554320" class="none">
+		  <text text-anchor="middle" font-size="22" style="display:block;" font-family="sans-serif" fill="#ffffff" stroke="#a6a6a6" stroke-width="8" rotate="0" paint-order="stroke" stroke-linejoin="round"><tspan x="20" y="26.4">アイデアをイメージ付きで残す</tspan></text>
+		</g><g id="g1630285279358" class="none" transform="matrix(1 0 0 1 -176 -249)"><g id="ID0.24896438512951136" transform="matrix(-1, 0, 0, 1, 200, 200) scale(0.05 0.05)">
+    <path id="ID0.38790131732821465" fill="#000000" stroke="none" d="M 7190 9369 C 6701 9306 6297 9008 6121 8582 C 6050 8410 6020 8177 6038 7941 C 6045 7855 6053 7767 6056 7745 L 6062 7705 L 5995 7671 C 5952 7649 5915 7621 5892 7592 C 5806 7486 5787 7468 5766 7473 C 5754 7476 5698 7494 5640 7514 C 5384 7603 5135 7621 4915 7565 C 4882 7557 4815 7530 4765 7506 C 4596 7423 4475 7292 4406 7116 C 4366 7016 4350 6929 4350 6802 L 4350 6688 L 4273 6697 C 4230 6701 4103 6705 3990 6705 C 3812 6705 3773 6702 3697 6682 C 3486 6629 3342 6518 3257 6340 C 3200 6221 3176 6121 3150 5905 C 3124 5681 3124 5670 3165 5551 C 3217 5400 3217 5402 3108 5329 C 2932 5210 2884 5151 2844 5004 C 2800 4840 2820 4677 2895 4565 C 2909 4545 2920 4527 2920 4525 C 2920 4522 2877 4520 2825 4520 L 2730 4520 L 2730 4205 L 2730 3890 L 2214 3890 L 1699 3890 L 1673 3833 C 1575 3612 1510 3298 1510 3045 C 1510 2857 1548 2625 1608 2449 C 1658 2305 1621 2320 1916 2320 C 2057 2320 2170 2317 2168 2313 C 2166 2308 2107 2191 2037 2053 L 1910 1800 L 1420 1800 L 930 1800 L 930 1415 L 930 1030 L 1227 1028 L 1523 1025 L 1541 974 C 1602 792 1735 613 1886 509 C 1953 463 2076 408 2165 383 L 2245 361 L 1123 361 L 0 360 L 0 180 L 0 0 L 6400 0 L 12800 0 L 12800 180 L 12800 360 L 11358 361 C 9960 361 9917 362 9970 379 C 10228 462 10426 674 10535 983 L 10563 1060 L 11246 1060 L 11930 1060 L 11930 1435 L 11930 1810 L 11310 1810 L 10690 1810 L 10690 1858 C 10690 1884 10679 2274 10665 2725 C 10634 3750 10634 3741 10661 3797 C 10713 3905 10831 3994 10938 4007 L 10990 4013 L 10990 4084 C 10990 4123 10987 4239 10983 4343 L 10977 4530 L 9638 4530 L 8300 4530 L 8300 4215 L 8300 3900 L 7374 3902 L 6448 3905 L 6425 3967 C 6359 4143 6218 4269 6039 4314 C 5963 4333 5806 4335 5728 4319 C 5544 4281 5402 4133 5359 3938 L 5347 3880 L 4586 3886 C 4167 3890 3824 3894 3823 3895 C 3821 3896 3800 4443 3800 4503 C 3800 4517 3790 4520 3734 4520 C 3656 4520 3657 4515 3728 4633 C 3835 4811 4116 5156 4182 5191 C 4194 5198 4226 5196 4282 5185 C 4484 5147 4704 5147 4855 5185 C 5030 5229 5180 5345 5257 5495 C 5313 5603 5341 5633 5377 5623 C 5393 5619 5468 5616 5545 5616 C 5752 5618 5860 5651 5999 5756 C 6034 5783 6071 5811 6081 5818 C 6096 5830 6113 5824 6214 5770 C 6541 5596 6704 5591 7025 5745 C 7246 5852 7391 5969 7494 6125 C 7588 6266 7596 6268 7720 6190 C 7876 6091 8035 6053 8249 6063 C 8481 6074 8665 6153 8839 6317 C 9014 6481 9132 6704 9170 6942 C 9188 7050 9178 7244 9151 7338 C 9093 7540 8953 7717 8780 7809 C 8748 7826 8719 7846 8717 7853 C 8714 7859 8714 7982 8717 8125 C 8721 8359 8720 8395 8702 8487 C 8649 8751 8511 8955 8283 9107 C 7973 9314 7550 9415 7190 9369 Z M 8839 975 C 8957 670 9154 468 9415 384 L 9485 361 L 8475 361 C 7503 361 7467 362 7525 379 C 7799 457 8007 664 8101 951 L 8133 1050 L 8472 1048 L 8811 1045 L 8839 975 Z M 3758 1011 L 3941 1005 L 3979 915 C 4087 653 4252 477 4478 384 L 4535 360 L 3580 361 C 2626 361 2625 361 2695 380 C 2957 451 3159 658 3241 940 L 3264 1020 L 3419 1019 C 3505 1018 3657 1015 3758 1011 Z M 6362 993 C 6494 663 6667 478 6923 389 L 7005 360 L 6060 360 L 5115 360 L 5194 395 C 5283 433 5322 458 5397 521 C 5510 616 5614 784 5662 948 L 5683 1020 L 6017 1020 L 6350 1020 L 6362 993 Z " transform="matrix(0.10000000149011612, 0, 0, -0.10000000149011612, 0, 938)"/>
+  </g></g>
+
+<g id="g1630504907247" fig="path" class="none" close="close" smooth="smooth" transform="translate(0,0)"><path d="M357, 242C332.55, 242 308.28, 244.57 284, 247C264.89, 248.91 246.2, 253.79 227, 255C208.97, 256.14 190.89, 260.33 173, 254C159.21, 249.12 147.33, 242.33 145, 226C142.48, 208.35 157.53, 198.23 163, 184C167.55, 172.18 173.42, 160.81 175, 148C176.55, 135.46 172.69, 123.36 172, 111C171.35, 99.34 163.62, 87.89 171, 76C179.54, 62.24 193.22, 56.74 208, 53C223.53, 49.07 238.74, 52.63 254, 55C273.41, 58.01 291.75, 65.36 311, 69C328.86, 72.38 346.75, 75.58 365, 76C390.77, 76.59 416.46, 75.68 442, 72C463.25, 68.94 482.12, 56.63 504, 56C519.48, 55.55 533.53, 59.71 546, 69C555.38, 75.99 557.32, 86.43 559, 97C560.89, 108.91 557.29, 120.36 556, 132C554.96, 141.38 551.7, 150.43 552, 160C552.38, 171.94 555.71, 183.38 558, 195C559.72, 203.73 563.28, 212.04 564, 221C564.65, 229.11 567.02, 237.36 562, 245C557.04, 252.55 548.93, 254.11 541, 256C525.88, 259.61 510.53, 261.18 495, 261C482.04, 260.85 469.63, 257.24 457, 255C443.29, 252.57 429.84, 248.8 416, 247C396.41, 244.45 376.81, 242 357, 242 Z" stroke-dasharray="4 4" style="stroke-width: 2; stroke: rgb(255, 128, 0); fill: none;" id="p1630505352713"/></g><g id="my_animation"><g fig="text" style="display:block;" transform="" id="t1630331092778" class="none"><text text-anchor="middle" font-size="18" style="display:block;" font-family="sans-serif" fill="#ffffff" stroke="#000" stroke-width="4" rotate="0" paint-order="stroke" stroke-linejoin="round"><textPath href="#p1630505352713" startOffset="10%"><tspan x="0" y="0">雰囲気・納得感をイメージ図や落書きで</tspan><animate attributeName="startOffset" from="0%" to="100%" repeatCount="indefinite" calcMode="linear" dur="15s" begin="0s"/></textPath></text></g><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#g1630285279358"><animateMotion repeatCount="indefinite" rotate="auto" dur="15s" begin="-2.6s"><mpath xlink:href="#p1630505352713"/></animateMotion></use><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#g1630285279358"><animateMotion repeatCount="indefinite" rotate="auto" dur="15s" begin="2.7s"><mpath xlink:href="#p1630505352713"/></animateMotion></use></g><g fig="text" style="display:block;" transform="matrix(1 0 0 1 207 149)" id="t1631632212219" class="none">
+		  <text text-anchor="middle" font-size="16" style="display:block;" fill="#00b300" stroke="#000" stroke-width="null" rotate="0" paint-order="stroke" stroke-linejoin="round"><tspan x="20" y="19.2">My Noteは</tspan><tspan x="20" y="38.4">こちらから</tspan></text>
+		</g><g fig="text" style="display:block;" transform="matrix(1 0 0 1 334 277)" id="t1631632216629" class="none">
+		  <text text-anchor="middle" font-size="16" style="display:block;" fill="#333333" stroke="#000" stroke-width="null" rotate="0" paint-order="stroke" stroke-linejoin="round"><tspan x="20" y="19.2">My Noteの使い方は</tspan><tspan x="20" y="38.4">My NoteのDBを</tspan><tspan x="20" y="57.599999999999994">参照して下さい。</tspan><tspan x="20" y="76.8">説明書きは徐々に</tspan><tspan x="20" y="96">充実させます。</tspan></text>
+		</g><g id="g1631632524998" fig="line" class="group"><path d="M221, 152L270, 117" marker-end="url(#end_arw)" stroke-dasharray="4 4" style="stroke-width: 2; stroke: rgb(255, 0, 0); fill: none;"/></g></g></svg>
+<br /><br /><br /><br /><div class="navheader"><a href="./new_list/" class="my_button" target="_blank" style=" width:100px; margin-left:220px;">My Note検索</a><a href="./contact/contact_form/" class="my_button" target="_blank" style=" width:100px; ">連絡先</a></div><div><br /></div><div><br /></div><br /><h1><span style="font-size: 50pt; font-family: 'comic sans ms', sans-serif; margin-left:220px; "><span style="color: #ff9900; ">M</span><span style="color: #33cccc;">y</span> <span style="color: #ff0000;">N</span><span style="color: #00ccff;">o</span><span style="color: #ffcc00;">t</span><span style="color: #00ff00;">e</span></span></h1><div><span style="color: inherit; font-family: inherit; font-size: 18px; margin-left:650px;"><font style="color: rgb(0, 0, 255);"><b>静岡県磐田市のスマートワークス</b></font></span></div><div><br /></div><div></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div><div><br /></div></div></body></html>

@@ -1,0 +1,22 @@
+﻿<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Download</title>
+    </head>
+    <body>
+
+<h2>Your Album</h2>
+
+<form action="{% url 'db_serv:ImageDownload' %}" method="POST">
+        {% for image in images %}
+            <a href="{% url 'db_serv:download' My_Image.pk %}">{{ image }}</a>
+            <input type="checkbox" name="zip" value="{{ My_Image.pk }}">
+            <hr>
+        {% endfor %}
+        {% csrf_token %}
+        <button type="submit">ダウンロード</button>
+    </form>
+
+    </body>
+</html>

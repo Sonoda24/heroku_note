@@ -1,0 +1,1619 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>My DataBase Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--Bootstrap４に必要なCSSとJavaScriptを読み込み-->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" -->
+  <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script -->
+  <!--script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script-->
+	<script src="../Select_comb.js"></script><!-- for combobox -->
+  <style>
+    /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+    /*.row.content {height: 1500px} */
+    
+    /* Set gray background color and 100% height */
+    .sidenav {
+      background-color: #f1f1f1;
+      height: 100%;
+    }
+    
+    /* Set black background color, white text and some padding */
+    footer {
+      background-color: #555;
+      color: white;
+      padding: 15px;
+    }
+    
+    /* On small screens, set height to 'auto' for sidenav and grid */
+    @media screen and (max-width: 767px) {
+      .sidenav {
+        height: auto;
+        padding: 15px;
+      }
+      .row.content {height: auto;} 
+    }
+/*============================================
+Table用に追加（中央）
+============================================*/
+table {
+	font-size: 12px;
+	width: 100%;
+	border-collapse: collapse;
+	}
+thead {
+	background-color: #7ac2ff;
+	text-align: center;
+}
+th,td {
+	border: 1px solid #8fbac8;
+	padding: 4px;
+	white-space: nowrap;
+}
+tr *{
+	padding: : 0.5em 1em 0.5em 1em;
+}
+tbody tr *:first-child{
+	width: 4em;
+	text-align: left;
+}
+
+tbody tr *:nth-child(2){
+	width: 10em;
+	text-align: left;
+}
+tbody tr *:nth-child(3){
+	width: 4em;
+	text-align: right;;
+}
+tbody tr:nth-child(even) td {
+	background-color: #dff0ff;
+}
+</style>
+<script type="text/javascript" language="javascript">
+//EditorTextのDebug出力用のfunction
+	var intex="";
+        function onButtonClick() {
+//	  intex = JSON.parse( sessionStorage.getItem("jsscript") );
+//	  alert("DB読み込み後のデータを表示します。");
+	  document.getElementById("content").innerHTML=intex;
+//	  document.getElementById("content").innerText=intex;
+
+        }
+</script> 
+</head>
+<body>
+<div class="container"><!-- Start container-fluid -->
+  <div class="main tab-content"><!-- Start main tab-content -->
+    <div class="tab-pane" id="tab1"><!-- Start tab1 -->
+     <div class="row">
+      <div class="col-sm-3 sidenav" style="line-height: 0.8em"> <!-- Start sidenav -->
+      	  <h4>Editor Page</h4>
+
+	<!-- サブメニュー（左カラム） -->
+	<form name="selboxB">
+	<p><label>課題名</label><br>
+	<input type="text" name="comboA" list="list_A" id="comA" onchange="chanComA()" autocomplete="off" style="height:25px; width:180px;">
+	<datalist id="list_A"></datalist>
+	<p><label>大分類</label><br>
+	<input type="text" name="comboB" list="list_B" id="comB" onchange="chanComB()"  autocomplete="off" style="height:25px; width:180px;">
+	<datalist id="list_B"></datalist>
+	<p><label>中分類</label><br>
+	<input type="text" name="comboC" list="list_C" id="comC" onchange="chanComC()"  autocomplete="off" style="height:25px; width:180px;">
+	<datalist id="list_C"></datalist>
+	<p><label>小分類</label><br>
+	<input type="text" name="comboD" list="list_D" id="comD" onchange="chanComD()"  autocomplete="off" style="height:25px; width:180px;">
+	<datalist id="list_D"></datalist>
+	<p><label>概要</label><br>
+	<textarea name="viewText" id="Texview" cols="32" rows=5 maxlength="150" style="line-height: 1em"></textarea>
+	<p><label>更新日</label><br>
+	<input type="date" id="T_date"></input>
+	</form>
+
+      </div><!-- End sidenav -->
+
+      <div class="col-sm-9 float-right"><!-- Start col-sm-9 -->
+	<!-- メインメニュー -->
+        <nav class="navbar navbar-expand-sm bg-primary navbar-light">
+	<ul class="navbar-nav">
+		<li class="nav-item" id="menuB01"><a class="nav-link" href="#!" onclick="check_prev()">Prev</a></li>
+		<li class="nav-item" id="menuB02"><a class="nav-link text-white" href="#!" onclick="check_next()">Next</a></li>
+		<li class="nav-item" id="menuB03"><a class="nav-link text-white" href="#!" onclick="copy_add()">Copy新規</a></li>
+		<li class="nav-item" id="menuB04"><a class="nav-link text-white" href="#!" onclick="new_add()">新規</a></li>
+		<li class="nav-item" id="menuB05"><a class="nav-link text-white" href="#!" onclick="setedit_disable()">変更</a></li>
+		<li class="nav-item" id="menuB06"><a class="nav-link text-white" href="#!" onclick="submit_save()">保存</a></li>
+		<li class="nav-item" id="menuB07"><a class="nav-link text-white" href="#!" onclick="submit_del()">削除</a></li>
+		<li class="nav-item" id="menuB08"><a class="nav-link" href="#!" onclick="rn_displaydb()">戻る</a></li>
+	</ul>
+	</nav>
+	<br>
+      	<!-- h3>Editor Page</h3 -->
+		<div id="main">
+		<div id="content" style="width:95%; height:400px; overflow-y:scroll;"  contenteditable="false" ><p id="tex">Getting started with Aloha Editor!</p></div>
+		</div>
+
+
+
+      </div><!-- End col-sm-9 -->
+     </div><!-- End row -->
+    </div><!-- End tab1 -->
+
+    <div class="tab-pane active" id="tab2"><!-- Start tab2 -->
+     <div class="row">
+      <div class="col-sm-3 sidenav" style="line-height: 0.8em"> <!-- Start sidenav -->
+        <h4>Search and Data Table</h4>
+
+	<!-- サブメニュー（左カラム） -->
+	<form name="selbox">
+	<p><label>課題名</label><br>
+	<select id="comboboxA" onchange="changeCombA()" style="height:25px; width:180px;"></select>
+	<p><label>大分類</label><br>
+	<select id="comboboxB"  onchange="changeCombB()" style="height:25px; width:180px;"></select>
+	<p><label>中分類</label><br>
+	<select id="comboboxC"  onchange="changeCombC()" style="height:25px; width:180px;"></select>
+	<p><label>小分類</label><br>
+	<select id="comboboxD"  onchange="changeCombD()" style="height:25px; width:180px;"></select>
+	</form>
+
+      </div><!-- End sidenav -->
+
+      <div class="col-sm-9 float-right"><!-- Start col-sm-9 -->
+	<!-- メインメニュー -->
+        <nav class="navbar navbar-expand-sm bg-primary navbar-dark">
+	<ul class="navbar-nav">
+		<li class="nav-item" id="menu01"><a class="nav-link" href="#!" onclick="displaydb()">検索</a></li>
+		<li class="nav-item" id="menu02"><a class="nav-link" href="#!" onclick="check_checkbox()">抽出</a></li>
+		<li class="nav-item" id="menu03"><a class="nav-link" href="#!" onclick="new_add2()">新規</a></li>
+		<li class="nav-item" id="menu04"><a class="nav-link" href="">終了</a></li>
+		<li class="nav-item" id="menu05"><a class="nav-link" href="">Home</a></li>
+	</ul>
+	</nav>
+	<!-- ニュース（中央カラム） -->
+        <br>
+	<div id="news" style="width:100%;height:430px;float:left; overflow-y:scroll;overflow-x:scroll;">
+	  <!-- Js用の新テーブルの設定（最初の1行までとして2行目以降はCopyして作成する -->
+	  <table id="my_db">
+		<thead>
+		  <tr>
+	   	    <th>選</th>
+	   	    <th>課題名</th>
+	   	    <th>分類１</th>
+	   	    <th>分類２</th>
+	   	    <th>分類３</th>
+	   	    <th>更新日</th>
+	   	    <th>名称</th>
+		  </tr>
+   		</thead>
+   		<tbody id="my_db-tbody">
+		  <tr>
+	   	    <td bgcolor="#99CC00" align="center"><input type="checkbox" class="checkboxes" /></td>
+	   	    <td>A</td>
+	   	    <td>B</td>
+	   	    <td>C</td>
+	   	    <td>D</td>
+	   	    <td>E</td>
+	   	    <td>F</td>
+		  </tr>
+		</tbody>
+	</table>
+      </div><!-- news -->
+
+
+      </div><!-- End col-sm-9 -->
+     </div><!-- End row -->
+    </div><!-- End tab2 -->
+  </div><!-- End main tab-content -->
+</div><!-- End container-fluid -->
+<script>
+//scriptのmain処理
+//globalな変数を定義する。
+   var edit_mode="Search";
+   var Last_mode="Search";
+   var Editable=false;
+   var To_return="home";
+
+  var gCode="<?php echo $gCode; ?>";
+  if(gCode=="initial") {
+	console.log("initial");
+  }
+//初回か否かの判定にsessionstorageを使う方法
+  var key = 'my_session';
+  var key1 = 'read_data';
+  if(!window.sessionStorage.getItem(key)) {
+    // セットされてなければnullなのでこのブロックに入る。
+console.log('** submit_all Stage');
+    window.sessionStorage.setItem(key, 1);
+    submit_all();
+    // そのほか必要な処理
+  }
+  else if(!window.sessionStorage.getItem(key1)) {
+    // セットされてなければnullなのでこのブロックに入る。
+console.log('** read_data Stage');
+// 初回なのでsessionStorageのkey1値を格納する
+        window.sessionStorage.setItem(key1, 1);
+
+	gCode="<?php echo $gCode; ?>";
+	var gDataid="<?php echo $gMydbid; ?>";
+　　　　var gDataA="<?php echo $gComboA; ?>";
+　　　　var gDataB="<?php echo $gComboB; ?>";
+　　　　var gDataC="<?php echo $gComboC; ?>";
+　　　　var gDataD="<?php echo $gComboD; ?>";
+　　　　var gDataE="<?php echo $gComboE; ?>";
+　　　　var gDataF="<?php echo $gComboF; ?>";
+
+	var selA_value="";
+	var selB_value="";
+	var selC_value="";
+	var selD_value="";
+	var n_present=0;     //　現在Editor対象のレコードのdispflagの番号
+	var k_table=1;       //　Table表示の番号
+	var str = selA_value+','+selB_value+','+selC_value+','+selD_value+','+String(n_present)+','+String(k_table)+','+String(To_return)+','+String(edit_mode);
+	var ary = str.split(',');
+
+	var E_selA="";
+	var E_selB="";
+	var E_selC="";
+	var E_selD="";
+
+	var DataA = gDataA.split(';,;', -1);
+	var DataB = gDataB.split(';,;', -1);
+	var DataC = gDataC.split(';,;', -1);
+	var DataD = gDataD.split(';,;', -1);
+	var DataE = gDataE.split(';,;', -1);
+	var DataF = gDataF.split(';,;', -1);
+	var Dataid = gDataid.split(';,;', -1);
+	var delflag = gDataid.split(';,;', -1);
+	var dispflag = gDataid.split(';,;', -1);
+	var nlist=DataA.length;
+	for(i=1;i<nlist;i++){
+		dispflag[i]=i;
+		}
+console.log('length A,B,C,D,F=',DataA.length,DataB.length,DataC.length,DataD.length,DataE.length,DataF.length)
+  //配列をJSON文字列に変換
+  	var js_DataA = JSON.stringify( DataA );
+  	var js_DataB = JSON.stringify( DataB );
+  	var js_DataC = JSON.stringify( DataC );
+  	var js_DataD = JSON.stringify( DataD );
+  	var js_DataE = JSON.stringify( DataE );
+  	var js_DataF = JSON.stringify( DataF );
+  	var js_Dataid = JSON.stringify( Dataid );
+  	var js_Selbox=JSON.stringify( ary );
+
+  //JSON文字列をセッションストレージに書き込む
+  	sessionStorage.setItem( "jsonsA" , js_DataA );
+  	sessionStorage.setItem( "jsonsB" , js_DataB );
+  	sessionStorage.setItem( "jsonsC" , js_DataC );
+  	sessionStorage.setItem( "jsonsD" , js_DataD );
+  	sessionStorage.setItem( "jsonsE" , js_DataE );
+  	sessionStorage.setItem( "jsonsF" , js_DataF );
+  	sessionStorage.setItem( "jsonsid" , js_Dataid );
+	sessionStorage.setItem( "jsonsSel" , js_Selbox );
+   }
+   else{
+    // 初回以外の処理（Session Storageに記憶されている場合)
+	var DataA = JSON.parse( sessionStorage.getItem("jsonsA") );
+	var DataB = JSON.parse( sessionStorage.getItem("jsonsB") );
+	var DataC = JSON.parse( sessionStorage.getItem("jsonsC") );
+	var DataD = JSON.parse( sessionStorage.getItem("jsonsD") );
+	var DataE = JSON.parse( sessionStorage.getItem("jsonsE") );
+	var DataF = JSON.parse( sessionStorage.getItem("jsonsF") );
+	var Dataid = JSON.parse( sessionStorage.getItem("jsonsid") );
+	var delflag = JSON.parse( sessionStorage.getItem("jsonsfg") );
+	var dispflag = JSON.parse( sessionStorage.getItem("jsonsdisp") );
+	var nlist=DataA.length;
+console.log('delflag=',JSON.stringify(delflag));
+console.log('dispflag=',JSON.stringify(dispflag));
+//初回の全データ受け取り以外のサーバーから戻って毎回行われる処理
+//サーバーからの送信されたレコードの取得
+        var gCode="<?php echo $gCode; ?>";
+	var gid="<?php echo $id; ?>";
+	var gtheme="<?php echo $theme; ?>";
+		document.getElementById( "comA" ).value = gtheme ;
+	var gbunrui1="<?php echo $bunrui1; ?>";
+		document.getElementById( "comB" ).value = gbunrui1 ;
+	var gbunrui2="<?php echo $bunrui2; ?>";
+		document.getElementById( "comC" ).value = gbunrui2 ;
+	var gbunrui3="<?php echo $bunrui3; ?>";
+		document.getElementById( "comD" ).value = gbunrui3 ;
+	var gregday="<?php echo $modday; ?>";
+	document.getElementById( "T_date" ).value=gregday;
+	var gauthor="<?php echo $author; ?>";
+//	overview（概要）はHTMLは許さない　HTMLを許すのはdescriptionのみ
+	var goverview="<?php echo $overview; ?>";
+	document.getElementById( "Texview" ).value=goverview;
+//json_encodeでしないとAloha Editorには適合しない??
+	var gdescrip=<?php echo json_encode($description); ?>
+//	var gdescrip="<?php echo $description; ?>";
+	gdescrip=htmlEntities(gdescrip,'decode');
+//	var gdescrip="<?php echo htmlspecialchars_decode($description,ENT_NOQUOTES); ?>";
+//	var gdescrip="<?php echo htmlspecialchars_decode($description,ENT_QUOTES); ?>";
+//        var gdescrip="<?php echo html_entity_decode($description, ENT_COMPAT, 'UTF-8'); ?>"
+//console.log('read descript=',gdescrip);
+//出力する前に複数種の特定HTMLタグを復元する
+//console.log('read descript=',gdescrip);
+	document.getElementById("content").innerHTML=gdescrip;
+//	document.getElementById("content").innerText=gdescrip;
+//	elem.innerHTML = "";
+//	elem.innerHTML.disabled=true;
+//console.log('descriotion length=',gdescrip.length);
+
+//直前の処理に応じて検索画面かEditor画面かを選択する
+console.log('from Server gCode=',gCode);
+   if(gCode=="initial") {			//HTMLブラウザをonのまま（session storage記憶中）再実行の場合
+	var selA_value="";
+	var selB_value="";
+	var selC_value="";
+	var selD_value="";
+	var n_present=0;
+	var k_table=1;
+	for(i=1;i<nlist;i++){
+		if(delflag[i]!="D")　{
+				delflag[i]=""; 
+			}
+		}
+	edit_mode="Search";
+   }
+    else {
+	var Selbox =　JSON.parse( sessionStorage.getItem("jsonsSel") );
+	var selA_value=Selbox[0];
+	var selB_value=Selbox[1];
+	var selC_value=Selbox[2];
+	var selD_value=Selbox[3];
+	var n_present=Number(Selbox[4]);       //
+	var k_table=Number(Selbox[5]);         //
+	To_return=Selbox[6];
+	Last_mode=Selbox[7];
+console.log('jsonparse Selbox',Selbox,'selA=',selA_value,selB_value,selC_value,selD_value);
+console.log('nlist=',nlist,'n_present=',n_present,' rec_num=',Dataid[dispflag[n_present]],' k_table=',k_table,'To_return=',To_return,'Last_mode=',Last_mode);
+//	edit_mode="Search";
+	if(gCode=="add_data") {
+		Dataid[dispflag[n_present]]=gid;
+		edit_mode="";
+		if(To_return=="Search") {
+			edit_mode="Search";
+		}
+		if(To_return=="Edit") {
+			edit_mode="edit_doc";
+		}
+	}
+	if(gCode=="update") {
+		if(To_return=="Search"){
+		edit_mode="Search";
+		}
+		else {
+			edit_mode="";
+		}
+	}
+	if(gCode=="put_data") {
+		if(To_return=="Search"){
+		edit_mode="Search";
+		}
+		else {
+			edit_mode="";
+		}
+	}
+	if(gCode=="delete") {
+		edit_mode="";
+	}
+console.log('after nlist=',nlist,'n_present=',n_present,' rec_num=',Dataid[dispflag[n_present]],' k_table=',k_table,'To_return=',To_return,'Last_mode=',Last_mode);		
+console.log("Set edit_mode=",edit_mode,' To_return=',To_return);
+	gCode="";
+//alert("debug用次のステップに進みます。");
+	}
+
+	var A_return=To_return;
+	To_return="";
+	switch( A_return) {
+		case 'Search':
+		console.log('次はSearchです！');
+		rn_displaydb();
+		break;
+ 
+		case 'Prev':
+		console.log('次はPrevです！');
+		check_prev();
+		break;
+ 
+		case 'Next':
+		console.log('次はNextです！');
+		check_next();
+		break;
+
+		default:
+		console.log('次はdefaultです！');
+		break;		
+	}
+}
+//サーバーから戻っったクライアント（javascript）サイドの毎回の処理の開始
+//Searchタブ及びEditタブに共通の処理
+//　DBデータ（読み込まれた/sessionstorageに記憶された）よりコンボデータを作成する
+   var gDataComboboxA = [{ id: 0, value: "" }];
+   var gDataComboboxB = [{ id: 0, value: "" }];
+   var gDataComboboxC = [{ id: 0, value: "" }];
+   var gDataComboboxD = [{ id: 0, value: "" }];
+
+// 重複の無い最上位（課題名ComboboxA）のコンボデータを作る
+   for(var i=1;i<DataA.length;i++){
+	var fg=1;
+	var j=1;
+//console.log('i',i,'aleng',gDataComboboxA.length,'ComboA',gDataComboboxA);
+	while(j<gDataComboboxA.length){
+//console.log('ind',j,'value',gDataComboboxA[j].value,'data',DataA[i]);
+		if (gDataComboboxA[j].value==DataA[i]) {
+				fg=0;
+				break;
+				}
+		j++;
+	}
+	if (fg==1) {
+		var item = new Object();
+		item.id = i; // input value
+		item.value = DataA[i];
+		gDataComboboxA.push(item);
+	}
+   }
+//	console.log(gDataComboboxA);
+   var box1 = new SelectBox("comboboxA");
+   box1.registOption(new SelectOption(null, "課題名", "0", "color:gray;"));
+   for (var i=1; i<gDataComboboxA.length; i++) {
+	box1.registOption(new SelectOption(null, gDataComboboxA[i].value , String(gDataComboboxA[i].id)));
+	}
+//上で定義したcomboboxA（box1）のObject骨格をつくる
+  box1.make(null);
+console.log('comboboxA=',comboboxA);
+
+console.log("Last mode=",Last_mode,"edit_mode=",edit_mode);
+//
+//Searchタブの処理
+//
+　　if(edit_mode=="Search") {
+        nodisp=document.getElementById('tab1');
+        nodisp.style.display='none';
+        disp=document.getElementById('tab2');
+        disp.style.display='block';
+
+	var Search_level=0;
+   	var BfS_level=0;
+   	var n_disp=nlist-1;    //最初のnullデータを除くTable出力（display)されるデータ数
+
+
+//直前の選択項目に基づいたcomboboxをsetする
+	if ((selA_value!="")&&(selA_value!="課題名")) {
+		var coma=document.getElementById("comboboxA");
+console.log('SelA=',selA_value,'coma=',coma);
+		coma.selectedIndex=0;
+		for(i=1;i<coma.length;i++){
+			coma.selectedIndex=i;
+			if(selA_value==coma.options[i].label)　{
+				break;
+			}
+		}
+		changeCombA();
+		Search_level=1;
+	}
+	if ((selB_value!="")&&(selB_value!="大分類")) {
+		var comb=document.getElementById("comboboxB");
+console.log('SelB=',selB_value,'comb=',comb);
+		comb.selectedIndex=0;
+		for(i=1;i<comb.length;i++){
+			comb.selectedIndex=i;
+			if(selB_value==comb.options[i].label)　{
+				break;
+			}
+		}
+		changeCombB();
+		Search_level=2;
+	}
+	if ((selC_value!="")&&(selC_value!="中分類")) {
+		var comc=document.getElementById("comboboxC");
+		comc.selectedIndex=0;
+		for(i=1;i<comc.length;i++){
+			comc.selectedIndex=i;
+			if(selC_value==comc.options[i].label)　{
+				break;
+			}
+		}
+		changeCombC();
+		Search_level=3;
+	}
+	if ((selD_value!="")&&(selD_value!="小分類")) {
+		var comd=document.getElementById("comboboxD");
+		comd.selectedIndex=0;
+		for(i=1;i<comd.length;i++){
+			comd.selectedIndex=i;
+			if(selD_value==comd.options[i].label)　{
+				break;
+			}
+		}
+		Search_level=4;
+	}
+//DB dataのテーブル表示
+	displaydb();
+　　　}
+//
+//Editタブの処理
+//
+　　　else {
+       	nodisp=document.getElementById('tab2');
+       	nodisp.style.display='none';
+       	disp=document.getElementById('tab1');
+       	disp.style.display='block';
+
+  	//EditorTabのDropDownリストを設定する
+  	for(var i=0;i<gDataComboboxA.length;i++){
+    		let op = document.createElement("option");
+    		op.value = gDataComboboxA[i].value;
+    		document.getElementById("list_A").appendChild(op);
+  	}
+  	for(var i=0;i<gDataComboboxB.length;i++){
+    		let op = document.createElement("option");
+    		op.value = gDataComboboxB[i].value;
+    		document.getElementById("list_B").appendChild(op);
+  	}
+  	for(var i=0;i<gDataComboboxC.length;i++){
+    		let op = document.createElement("option");
+    		op.value = gDataComboboxC[i].value;
+    		document.getElementById("list_C").appendChild(op);
+  	}
+  	for(var i=0;i<gDataComboboxD.length;i++){
+    		let op = document.createElement("option");
+    		op.value = gDataComboboxD[i].value;
+    		document.getElementById("list_D").appendChild(op);
+  		}
+   }
+//script　mainの最終行
+//script用のFunctions
+window.onload = function() {
+
+	//Editor画面の制御（編集可能or不可mode(edit_mode)、入力可能or不可(Editable)
+console.log('before Editable=',document.getElementById("content").contentEditable);
+console.log("Last mode=",Last_mode,"edit_mode=",edit_mode);
+	if(edit_mode!="") {
+		document.getElementById("content").contentEditable = "true";
+		$('input#comA').attr('disabled',false);
+		$('input#comB').attr('disabled',false);
+ 		$('input#comC').attr('disabled',false);
+		$('input#comD').attr('disabled',false);
+		$('input#T_date').attr('disabled',false);
+		$('textarea#Texview').attr('disabled',false);
+		Editable=true;
+//console.log("EditState=true");
+		}
+	 else {
+		document.getElementById("content").contentEditable = "false";
+		$('input#comA').attr('disabled',true);
+		$('input#comB').attr('disabled',true);
+ 		$('input#comC').attr('disabled',true);
+		$('input#comD').attr('disabled',true);
+		$('input#T_date').attr('disabled',true);
+		$('textarea#Texview').attr('disabled',true);
+		Editable=false;
+//console.log("EditState=false");
+	}
+console.log('after Editable=',document.getElementById("content").contentEditable);
+	console.log('gCode=',gCode,'init Editable=',Editable);
+}
+//検索画面 combobox ComboB onchange function
+function changeCombA() {
+  
+  var selA=document.selbox.comboboxA.selectedIndex;
+  var selA_id=document.selbox.comboboxA.value;
+  selA_value=document.selbox.comboboxA.options[selA].label;
+console.log('**SelectA',selA,selA_id,selA_value);
+	var gDataComboboxB = [{ id: 0, value: "" }];
+// 重複の無いコンボデータを作る
+	for(var i=1;i<DataB.length;i++){
+		var fg=1;
+		var j=1;
+//console.log('i',i,'aleng',gDataComboboxA.length,'ComboA',gDataComboboxA);
+		while(j<gDataComboboxB.length){
+//console.log('ind',j,'value',gDataComboboxA[j].value,'data',DataA[i]);
+		  if (gDataComboboxB[j].value==DataB[i]) {
+					fg=0;
+					break;
+					}
+			j++;
+		}
+		if ((fg==1)&&(DataA[i]==selA_value)) {
+console.log('**registered ',DataA[i],DataB[i]);
+			var item = new Object();
+			item.id = i; // input value
+			item.value = DataB[i];
+			gDataComboboxB.push(item);
+		}
+	}
+//	console.log(gDataComboboxA);
+var box2 = new SelectBox("comboboxB");
+box2.registOption(new SelectOption(null, "大分類", "0", "color:gray;"));
+			　　for (var i=1; i<gDataComboboxB.length; i++) {
+				box2.registOption(new SelectOption(null, gDataComboboxB[i].value , String(gDataComboboxB[i].id)));
+				}
+  box2.make(null);　
+
+var box3 = new SelectBox("comboboxC");
+box3.registOption(new SelectOption(null, "中分類", "0", "color:gray;"));
+  box3.make(null);
+
+var box4 = new SelectBox("comboboxD");
+box4.registOption(new SelectOption(null, "小分類", "0", "color:gray;"));
+  box4.make(null);
+  Search_level=1;
+  if(selA_value=="課題名")　Search_level=0;
+  return;
+};
+// combobox ComboC onchange function
+function changeCombB() {
+  
+  var selB=document.selbox.comboboxB.selectedIndex;
+  var selB_id=document.selbox.comboboxB.value;
+  selB_value=document.selbox.comboboxB.options[selB].label;
+console.log('**SelectB',selB,selB_id,selB_value);
+
+	var gDataComboboxC = [{ id: 0, value: "" }];
+// 重複の無いコンボデータを作る
+	for(var i=1;i<DataC.length;i++){
+		var fg=1;
+		var j=1;
+//console.log('i',i,'aleng',gDataComboboxA.length,'ComboA',gDataComboboxA);
+		while(j<gDataComboboxC.length){
+		  if (gDataComboboxC[j].value==DataC[i]) {
+					fg=0;
+					break;
+					}
+		  j++;
+		}
+		if ((fg==1)&&(DataA[i]==selA_value)&&(DataB[i]==selB_value)) {
+console.log('**registered ',DataA[i],DataB[i],DataC[i]);
+			var item = new Object();
+			item.id = i; // input value
+			item.value = DataC[i];
+			gDataComboboxC.push(item);
+		}
+	}
+//	console.log(gDataComboboxA);
+var box3 = new SelectBox("comboboxC");
+box3.registOption(new SelectOption(null, "中分類", "0", "color:gray;"));
+			　　for (var i=1; i<gDataComboboxC.length; i++) {
+				box3.registOption(new SelectOption(null, gDataComboboxC[i].value , String(gDataComboboxC[i].id)));
+				}
+  box3.make(null);　
+
+  var box4 = new SelectBox("comboboxD");
+  box4.registOption(new SelectOption(null, "小分類", "0", "color:gray;"));
+  box4.make(null);
+  Search_level=2;
+  if(selB_value=="大分類")　Search_level=1;
+  return;
+};
+// combobox ComboD onchange function
+function changeCombC() {
+  
+  var selC=document.selbox.comboboxC.selectedIndex;
+  var selC_id=document.selbox.comboboxC.value;
+  selC_value=document.selbox.comboboxC.options[selC].label;
+console.log('**SelectC',selC,selC_id,selC_value);
+
+	var gDataComboboxD = [{ id: 0, value: "" }];
+// 重複の無いコンボデータを作る
+	for(var i=1;i<DataD.length;i++){
+		var fg=1;
+		var j=1;
+//console.log('i',i,'aleng',gDataComboboxA.length,'ComboA',gDataComboboxA);
+		while(j<gDataComboboxD.length){
+		  if (gDataComboboxD[j].value==DataD[i]) {
+					fg=0;
+					break;
+					}
+		  j++;
+		}
+		if ((fg==1)&&(DataA[i]==selA_value)&&(DataB[i]==selB_value)&&(DataC[i]==selC_value)) {
+console.log('**registered ',DataA[i],DataB[i],DataC[i],DataD[i]);
+			var item = new Object();
+			item.id = i; // input value
+			item.value = DataD[i];
+			gDataComboboxD.push(item);
+		}
+	}
+//	console.log(gDataComboboxA);
+var box4 = new SelectBox("comboboxD");
+box4.registOption(new SelectOption(null, "小分類", "0", "color:gray;"));
+			　　for (var i=1; i<gDataComboboxD.length; i++) {
+				box4.registOption(new SelectOption(null, gDataComboboxD[i].value , String(gDataComboboxD[i].id)));
+				}
+  box4.make(null);　
+  Search_level=3;
+  if(selC_value=="中分類")　Search_level=2;
+  return;
+};
+function changeCombD() {
+  
+  var selD=document.selbox.comboboxD.selectedIndex;
+  var selD_id=document.selbox.comboboxD.value;
+  selD_value=document.selbox.comboboxD.options[selD].label;
+console.log('**SelectD Dindex=',selD,' id= ',selD_id,' value= ',selD_value);
+  Search_level=4;
+  if(selD_value=="小分類")　Search_level=3;
+  return;
+};
+//Editor画面 combobox ComA onchange function 
+function chanComA() {
+   E_selA=$("#comA").val();
+console.log('**Editor SelectA =',E_selA);
+
+   if(E_selA!="") {
+	var gDataComboboxB = [{ id: 0, value: "" }];
+// 重複の無いコンボデータを作る
+	for(var i=1;i<DataB.length;i++){
+		var fg=1;
+		var j=1;
+//console.log('i',i,'aleng',gDataComboboxA.length,'ComboA',gDataComboboxA);
+		while(j<gDataComboboxB.length){
+//console.log('ind',j,'value',gDataComboboxA[j].value,'data',DataA[i]);
+		  if (gDataComboboxB[j].value==DataB[i]) {
+					fg=0;
+					break;
+					}
+			j++;
+		}
+		if ((fg==1)&&(DataA[i]==E_selA)) {
+console.log('**registered ',DataA[i],DataB[i]);
+			var item = new Object();
+			item.id = i; // input value
+			item.value = DataB[i];
+			gDataComboboxB.push(item);
+		}
+	}
+   }
+//	console.log(gDataComboboxA);
+
+  	for(var i=0;i<gDataComboboxB.length;i++){
+    		let op = document.createElement("option");
+    		op.value = gDataComboboxB[i].value;
+    		document.getElementById("list_B").appendChild(op);
+  	}
+};
+// combobox CombB onchange function
+function chanComB() {
+   E_selB=$("#comB").val();
+console.log('**Editor SelectB =',E_selB);
+
+	var gDataComboboxC = [{ id: 0, value: "" }];
+// 重複の無いコンボデータを作る
+   if(E_selB!="") {
+	for(var i=1;i<DataC.length;i++){
+		var fg=1;
+		var j=1;
+//console.log('i',i,'aleng',gDataComboboxA.length,'ComboA',gDataComboboxA);
+		while(j<gDataComboboxC.length){
+		  if (gDataComboboxC[j].value==DataC[i]) {
+					fg=0;
+					break;
+					}
+		  j++;
+		}
+		if ((fg==1)&&(DataA[i]==E_selA)&&(DataB[i]==E_selB)) {
+console.log('**registered ',DataA[i],DataB[i],DataC[i]);
+			var item = new Object();
+			item.id = i; // input value
+			item.value = DataC[i];
+			gDataComboboxC.push(item);
+		}
+	}
+   }
+
+  	for(var i=0;i<gDataComboboxC.length;i++){
+    		let op = document.createElement("option");
+    		op.value = gDataComboboxC[i].value;
+    		document.getElementById("list_C").appendChild(op);
+  	}
+};
+// combobox CombC onchange function
+function chanComC() {
+   E_selC=$("#comC").val();
+console.log('**Editor SelectC =',E_selC);
+
+	var gDataComboboxD = [{ id: 0, value: "" }];
+// 重複の無いコンボデータを作る
+   if(E_selC!="") {
+	for(var i=1;i<DataD.length;i++){
+		var fg=1;
+		var j=1;
+//console.log('i',i,'aleng',gDataComboboxA.length,'ComboA',gDataComboboxA);
+		while(j<gDataComboboxD.length){
+		  if (gDataComboboxD[j].value==DataD[i]) {
+					fg=0;
+					break;
+					}
+		  j++;
+		}
+		if ((fg==1)&&(DataA[i]==E_selA)&&(DataB[i]==E_selB)&&(DataC[i]==E_selC)) {
+console.log('**registered ',DataA[i],DataB[i],DataC[i],DataD[i]);
+			var item = new Object();
+			item.id = i; // input value
+			item.value = DataD[i];
+			gDataComboboxD.push(item);
+		}
+	}
+   }
+  	for(var i=0;i<gDataComboboxD.length;i++){
+    		let op = document.createElement("option");
+    		op.value = gDataComboboxD[i].value;
+    		document.getElementById("list_D").appendChild(op);
+  		}
+};
+function chanComD() {
+   E_selD=$("#comD").val();
+console.log('**Editor SelectD =',E_selD);
+
+};
+function transpose(a) {
+    return Object.keys(a[0]).map(function(c) {
+        return a.map(function(r) { return r[c]; });
+    });
+}
+
+//　checkboxがcheckされているか調べる
+function check_checkbox() {
+    To_return="";
+//Table表示のレコード中のものでcheckが入っているもののdataidを特定する
+    var tbl = document.getElementById("my_db");
+　　var k=0;
+    for (var i = 1 ; i < nlist ; ++i) {
+	if(delflag[i]=="") {
+		k +=1;		//Table表示されているものの順番
+        	var row = tbl.rows[k];
+		if (k==1) {		//　何もcheckされていない場合はこれが使われる
+			var ncheck=i;   //Table表示の最初のもの
+			k_table=k;
+		}
+        	var first_cell = row.cells[0];
+        	var checkbox = first_cell.firstChild;
+        	if (checkbox.checked) {
+			ncheck=i;	// data_d全体（表示してないものを含む）の中のcheckされているものの順番
+			k_table=k;      // table表示の中でのcheckされているいるものの順番
+			break;
+		} 
+	}
+   }
+   n_present=ncheck;
+   var nums=Dataid[dispflag[n_present]];
+console.log('submit read_rec num=',nums,' Dataid numb=',dispflag[n_present],' Table numb=',n_present);
+  //配列をJSON文字列に変換してアラート表示させる
+  var str = selA_value+','+selB_value+','+selC_value+','+selD_value+','+String(n_present)+','+String(k_table)+','+String(To_return)+','+String(edit_mode);
+  var ary = str.split(',');
+  var js_Selbox=JSON.stringify( ary );
+  //JSON文字列をセッションストレージに書き込む
+  sessionStorage.setItem( "jsonsSel" , js_Selbox );
+//  var js_delflag = JSON.stringify( delflag );
+//  var js_delflag = delflag.toString();
+//  sessionStorage.setItem( "jsonsfg" , js_delflag );
+   submit_get(nums);
+  return;
+}
+//　現レコードのnext表示レコードを取り出す
+function check_next() { 
+//編集中のレコードをDBに保存する
+	To_return="";
+	if(edit_mode!="") {
+		To_return="Next";
+		update_or_newrec();
+		return;
+		} 
+    var tbl = document.getElementById("my_db");
+　　var k=k_table;
+    var ncheck=n_present;
+console.log('present=',n_present,'k=',k_table);
+    for (var i = n_present+1 ; i < nlist ; ++i) {
+//console.log('i=',i);
+	if(delflag[i]=="") {
+		k +=1;		//Table表示されているものの順番
+		ncheck=i;	// data_dの中でtable表示されcheckされているいるもの
+		k_table=k;
+		break;
+	}
+   }
+   n_present=ncheck;
+   var nums=Dataid[dispflag[n_present]];
+console.log('submit read_rec num=',nums,' Dataid numb=',n_present,' disp_num=',dispflag[n_present]);
+  //配列をJSON文字列に変換してアラート表示させる
+  var str = selA_value+','+selB_value+','+selC_value+','+selD_value+','+String(n_present)+','+String(k_table)+','+String(To_return)+','+String(edit_mode);
+  var ary = str.split(',');
+  var js_Selbox=JSON.stringify( ary );
+  //JSON文字列をセッションストレージに書き込む
+  sessionStorage.setItem( "jsonsSel" , js_Selbox );
+//  var js_delflag = JSON.stringify( delflag );
+//  var js_delflag = delflag.toString();
+//  sessionStorage.setItem( "jsonsfg" , js_delflag );
+   submit_get(nums);
+  return;
+}
+//　checkboxがcheckされているか調べる
+function check_prev() {
+//編集中のレコードをDBに保存する
+	To_return="";
+	if(edit_mode!="") {
+		To_return="Prev";
+		update_or_newrec();
+		return;
+		}
+//Table表示のレコード中のものでcheckが入っているもののdataidを特定する
+    var tbl = document.getElementById("my_db");
+　　var k=k_table;
+    var ncheck=n_present;
+    for (var i = n_present-1 ; i >0 ; --i) {
+	if(delflag[i]=="") {
+		k -=1;		//Table表示されているものの順番
+		ncheck=i;	// data_dの中でtable表示されcheckされているいるもの
+		k_table=k;
+		break;
+	} 
+   }
+   n_present=ncheck;
+   var nums=Dataid[dispflag[n_present]];
+console.log('submit read_rec num=',nums,' Dataid numb=',n_present);
+  //配列をJSON文字列に変換してアラート表示させる
+  var str = selA_value+','+selB_value+','+selC_value+','+selD_value+','+String(n_present)+','+String(k_table)+','+String(To_return)+','+String(edit_mode);
+  var ary = str.split(',');
+  var js_Selbox=JSON.stringify( ary );
+  //JSON文字列をセッションストレージに書き込む
+  sessionStorage.setItem( "jsonsSel" , js_Selbox );
+//  var js_delflag = JSON.stringify( delflag );
+//  var js_delflag = delflag.toString();
+//  sessionStorage.setItem( "jsonsfg" , js_delflag );
+   submit_get(nums);
+  return;
+}
+function submit_all(){
+// フォームタグを生成
+var form = document.createElement('form');
+
+// フォームのmethodタイプ
+form.method = 'POST';
+
+// POST先
+form.action ="<?=$_SERVER["PHP_SELF"]?>";
+
+// POSTパラメーターようにinputタグを生成
+var reqElm = document.createElement('input');
+
+// nameとvalueにそれぞれPOSTしたいパラメーターを追加
+
+reqElm.name = "submit_all";
+reqElm.value = 0;
+// フォームタグにinputタグを追加
+form.appendChild(reqElm);
+
+var reqElm = document.createElement('input');
+reqElm.name = "";
+reqElm.value = 0;
+form.appendChild(reqElm);
+
+// bodyにフォームタグを追加
+document.body.appendChild(form);
+
+// 生成したフォームをSUBMIT
+form.submit();
+}
+function submit_get(num){
+// フォームタグを生成
+var form = document.createElement('form');
+
+// フォームのmethodタイプ
+form.method = 'POST';
+
+// POST先
+form.action ="<?=$_SERVER["PHP_SELF"]?>";
+
+// POSTパラメーターようにinputタグを生成
+var reqElm = document.createElement('input');
+
+// nameとvalueにそれぞれPOSTしたいパラメーターを追加
+
+reqElm.name = "submit_get";
+reqElm.value = 0;
+// フォームタグにinputタグを追加
+form.appendChild(reqElm);
+
+var reqElm = document.createElement('input');
+reqElm.name = "numb";
+reqElm.value = num;
+form.appendChild(reqElm);
+
+// bodyにフォームタグを追加
+document.body.appendChild(form);
+
+// 生成したフォームをSUBMIT
+form.submit();
+}
+function submit_del(){
+	To_return="Next";
+//deleteするレコードのid_numberを取得する
+var num=Dataid[dispflag[n_present]];
+
+//delflag及びsessionstorageの書き換え
+	delflag[n_present]="D";
+	window.sessionStorage.removeItem('jsonsfg');
+	var js_delflag = JSON.stringify( delflag );
+	sessionStorage.setItem( "jsonsfg" , js_delflag );
+
+  var str = selA_value+','+selB_value+','+selC_value+','+selD_value+','+String(n_present)+','+String(k_table)+','+String(To_return)+','+String(edit_mode);
+  var ary = str.split(',');
+  var js_Selbox=JSON.stringify( ary );
+  //JSON文字列をセッションストレージに書き込む
+  sessionStorage.setItem( "jsonsSel" , js_Selbox );
+
+// フォームタグを生成
+var form = document.createElement('form');
+
+// フォームのmethodタイプ
+form.method = 'POST';
+
+// POST先
+form.action ="<?=$_SERVER["PHP_SELF"]?>";
+
+// POSTパラメーターようにinputタグを生成
+var reqElm = document.createElement('input');
+
+// nameとvalueにそれぞれPOSTしたいパラメーターを追加
+
+reqElm.name = "submit_del";
+reqElm.value = 0;
+// フォームタグにinputタグを追加
+form.appendChild(reqElm);
+
+var reqElm = document.createElement('input');
+reqElm.name = "numb";
+reqElm.value = num;
+form.appendChild(reqElm);
+
+// bodyにフォームタグを追加
+document.body.appendChild(form);
+
+// 生成したフォームをSUBMIT
+form.submit();
+}
+function new_add(){
+
+	edit_mode="new_add";
+	var num=Number(Dataid[nlist-1])+1;
+	var nums=String(num);
+//	n_present=nlist;         //  n_present=1　となる。
+	
+	document.getElementById("content").contentEditable = "true";
+	$('input#comA').attr('disabled',false);
+	$('input#comB').attr('disabled',false);
+ 	$('input#comC').attr('disabled',false);
+	$('input#comD').attr('disabled',false);
+	$('input#T_date').attr('disabled',false);
+	$('textarea#Texview').attr('disabled',false);
+
+	var them="";
+	var rui1="";
+	var rui2="";
+	var rui3="";
+	var rday=getNowYMD();
+	document.getElementById( "comA" ).value=them;
+	document.getElementById( "comB" ).value=rui1;
+	document.getElementById( "comC" ).value=rui2;
+	document.getElementById( "comD" ).value=rui3;
+	document.getElementById( "T_date" ).value=rday;
+
+	var auth="";
+	var view="New Document";
+	document.getElementById("Texview").value= "New Document";
+	document.getElementById("content").innerHTML= "新しいDocumentです。";
+//	document.getElementById("content").innerText= "新しいDocumentです。";
+	var flag="";
+console.log("Edit_Mode=",edit_mode,' Overview=',view);
+//	mend_storage(nums,them,rui1,rui2,rui3,rday,view,flag);
+//	submit_add(nums,them,rui1,rui2,rui3,rday,auth,view,descript);
+
+}
+function new_add2() {
+
+//表示タブの切り替え
+
+    nodisp=document.getElementById('tab2');
+    nodisp.style.display='none';
+    disp=document.getElementById('tab1');
+    disp.style.display='block';
+	
+	new_add();	
+}
+function copy_add(){
+
+	To_return="Edit";
+	edit_mode="copy_add";
+
+	var num=Number(Dataid[nlist-1])+1;
+	var nums=String(num);
+
+	var them=document.getElementById( "comA" ).value;
+	var rui1=document.getElementById( "comB" ).value;
+	var rui2=document.getElementById( "comC" ).value;
+	var rui3=document.getElementById( "comD" ).value;
+	var rday=getNowYMD();
+
+	var auth="Y.Sonoda";
+	var view=document.getElementById( "Texview" ).value;
+	var descript= document.getElementById("content").innerHTML;
+//	var descript= document.getElementById("content").innerText;
+	var flag="";
+
+//   var nums=Dataid[n_present];
+//	n_present=nlist;       //  n_present=1 となる。
+console.log('submit read_rec num=',nums,' Dataid numb=',n_present,' Overview=',view);
+  //配列をJSON文字列に変換してアラート表示させる
+	var str = selA_value+','+selB_value+','+selC_value+','+selD_value+','+String(n_present)+','+String(k_table)+','+String(To_return)+','+String(edit_mode);
+	var ary = str.split(',');
+	var js_Selbox=JSON.stringify( ary );
+  //JSON文字列をセッションストレージに書き込む
+  sessionStorage.setItem( "jsonsSel" , js_Selbox );
+
+	mend_storage(nums,them,rui1,rui2,rui3,rday,view,flag);
+	submit_add(nums,them,rui1,rui2,rui3,rday,auth,view,descript);
+
+}
+function update_or_newrec(){
+console.log('****update or newrec edit_mode=',edit_mode,'To_return=',To_return);
+//neww_addからの場合
+	if(edit_mode=="new_add") {
+		var num=Number(Dataid[nlist-1])+1;      // 新規追加のレコード番号がおかしい
+		var nums=String(num);
+	}
+	  else {
+		var nums=String(gid);
+	}
+
+	var them=document.getElementById( "comA" ).value;
+	if((them=="")||(them=="課題名"))　{
+//		alert("第1key（課題名）が設定されていません。");
+		them="";
+	}
+
+	var rui1=document.getElementById( "comB" ).value;
+	var rui2=document.getElementById( "comC" ).value;
+	var rui3=document.getElementById( "comD" ).value;
+	var rday=getNowYMD();
+
+	var auth="Y.Sonoda";
+	var view=document.getElementById( "Texview" ).value;
+	var descript= document.getElementById("content").innerHTML;
+//	var descript= document.getElementById("content").innerText;
+	var flag="";
+	mend_storage(nums,them,rui1,rui2,rui3,rday,view,flag);
+console.log('update or neww add rec num=',nums,' Overview=',view);
+alert("新規レコード/修正レコードをDBに書き出します。");
+	submit_add(nums,them,rui1,rui2,rui3,rday,auth,view,descript);
+	edit_mode="";
+//	var js_descript = JSON.stringify(descript);
+//  	sessionStorage.setItem( "jsscript" , js_descript);
+//	document.getElementById("content").innerHTML="";
+}
+function getNowYMD(){
+  var dt = new Date();
+  var y = dt.getFullYear();
+  var m = ("00" + (dt.getMonth()+1)).slice(-2);
+  var d = ("00" + dt.getDate()).slice(-2);
+  var result = y + "-" + m + "-" + d;
+  return result;
+}
+function submit_add(num,them,rui1,rui2,rui3,rday,auth,view,descript){
+// フォームタグを生成
+	var form = document.createElement('form');
+// フォームのmethodタイプ
+	form.method = 'POST';
+// POST先
+	form.action ="<?=$_SERVER["PHP_SELF"]?>";
+// POSTパラメーターようにinputタグを生成
+	var reqElm = document.createElement('input');
+	reqElm.name = "submit_add";
+	reqElm.value = 0;
+	form.appendChild(reqElm);
+
+	if(edit_mode=="edit_doc") {
+		reqElm.name = "submit_upd";
+alert("UpdateレコードをDBに書き出します。");
+	}
+
+	var reqElm = document.createElement('input');
+	reqElm.name = "numb";
+	reqElm.value = num;
+	form.appendChild(reqElm);
+
+	var reqElm = document.createElement('input');
+	reqElm.name = "theme";
+	reqElm.value = them;
+	form.appendChild(reqElm);
+
+	var reqElm = document.createElement('input');
+	reqElm.name = "bunrui1";
+	reqElm.value = rui1;
+	form.appendChild(reqElm);
+
+	var reqElm = document.createElement('input');
+	reqElm.name = "bunrui2";
+	reqElm.value = rui2;
+	form.appendChild(reqElm);
+
+	var reqElm = document.createElement('input');
+	reqElm.name = "bunrui3";
+	reqElm.value = rui3;
+	form.appendChild(reqElm);
+
+	var reqElm = document.createElement('input');
+	reqElm.name = "modday";
+	reqElm.value = rday
+	form.appendChild(reqElm);
+
+	var reqElm = document.createElement('input');
+	reqElm.name = "author";
+	reqElm.value = auth;
+	form.appendChild(reqElm);
+
+	var reqElm = document.createElement('input');
+	reqElm.name = "overview";
+	reqElm.value = view;
+	form.appendChild(reqElm);
+
+	var reqElm = document.createElement('input');
+	reqElm.name = "description";
+	reqElm.value = descript;
+	form.appendChild(reqElm);
+
+// bodyにフォームタグを追加
+	document.body.appendChild(form);
+// 生成したフォームをSUBMIT
+	form.submit();
+
+}
+function mend_storage(nums,them,rui1,rui2,rui3,rday,view,flag){
+
+	if((edit_mode=="new_add")||(edit_mode=="copy_add") ) {
+console.log('last nlist= ',nlist);
+		DataA.push(them);
+		DataB.push(rui1);
+		DataC.push(rui2);
+		DataD.push(rui3);
+		DataE.push(rday);
+		DataF.push(view);
+		Dataid.push(nums);
+		delflag.push(flag);
+		dispflag.push(0);
+		nlist=DataA.length;
+		n_present=nlist-1;
+		for (var i = nlist-1 ; i > 1 ; i--) {
+			delflag[i]=delflag[i-1];
+			dispflag[i]=dispflag[i-1];
+		}
+		delflag[1]=flag;
+		dispflag[1]=n_present;
+		n_present=1;
+console.log(' new_add disp=',dispflag[1],' n_present=',n_present,' rec_no=',nums,' Overview=',view); 
+	}
+	  else {
+		DataA[n_present]=them;
+		DataB[n_present]=rui1;
+		DataC[n_present]=rui2;
+		DataD[n_present]=rui3;
+		DataE[n_present]=rday;
+		DataF[n_present]=view;
+		Dataid[n_present]=nums;
+		if (n_present!=1) {
+			for (var i = n_present ; i > 1 ; i--) {
+				delflag[i]=delflag[i-1];
+				dispflag[i]=dispflag[i-1];
+			}
+			delflag[1]=flag;
+			dispflag[1]=n_present;
+			n_present=1;
+		}
+console.log(' modify disp=',dispflag[1],' n_present=',n_present,' rec_no=',nums,' Overview=',view); 
+	}
+console.log('last dispflag=',JSON.stringify(dispflag));
+//SessionStorageの削除と初期化
+  window.sessionStorage.clear();
+
+  //配列をJSON文字列に変換
+  var js_DataA = JSON.stringify( DataA );
+  var js_DataB = JSON.stringify( DataB );
+  var js_DataC = JSON.stringify( DataC );
+  var js_DataD = JSON.stringify( DataD );
+  var js_DataE = JSON.stringify( DataE );
+  var js_DataF = JSON.stringify( DataF );
+  var js_Dataid = JSON.stringify( Dataid );
+  var js_delflag = JSON.stringify( delflag );
+  var js_dispflag = JSON.stringify( dispflag );
+
+  //JSON文字列をセッションストレージに書き込む
+  var key = 'my_session';
+  var key1 = 'read_data';
+
+  window.sessionStorage.setItem(key, 1);
+  window.sessionStorage.setItem(key1, 1);
+  sessionStorage.setItem( "jsonsA" , js_DataA );
+  sessionStorage.setItem( "jsonsB" , js_DataB );
+  sessionStorage.setItem( "jsonsC" , js_DataC );
+  sessionStorage.setItem( "jsonsD" , js_DataD );
+  sessionStorage.setItem( "jsonsE" , js_DataE );
+  sessionStorage.setItem( "jsonsF" , js_DataF );
+  sessionStorage.setItem( "jsonsid" , js_Dataid );
+  sessionStorage.setItem( "jsonsfg" , js_delflag );
+  sessionStorage.setItem( "jsonsdisp" , js_dispflag );
+  var str = selA_value+','+selB_value+','+selC_value+','+selD_value+','+String(n_present)+','+String(k_table)+','+String(To_return)+','+String(edit_mode);
+  var ary = str.split(',');
+  var js_Selbox=JSON.stringify( ary );
+  //JSON文字列をセッションストレージに書き込む
+  sessionStorage.setItem( "jsonsSel" , js_Selbox );
+}
+function submit_save(){
+//編集中のレコードをDBに保存する
+	To_return="";
+	if(edit_mode!="") {
+		update_or_newrec();
+		}
+}
+function rn_displaydb(){
+//編集中のレコードをDBに保存する
+	To_return="";
+	if((edit_mode!="")&&(edit_mode!="Search")) {
+		To_return="Search";
+		update_or_newrec();
+		}
+//表示タブの切り替え
+console.log('Just return 検索','selA=',selA_value,selB_value,selC_value,selD_value);
+    disp=document.getElementById('tab1');
+    disp.style.display='none';
+    nodisp=document.getElementById('tab2');
+    nodisp.style.display='block';
+    displaydb()
+//console.log('after delflag=',JSON.stringify(delflag)); 
+}
+function displaydb(){
+//  Search level に従ってテーブルに出力するデータを選別する
+console.log('Search level=',Search_level,' Before level=',BfS_level);
+
+  if (Search_level==(BfS_level+1)){
+//第１キーワード（課題）に従ってdelflagにてdata_dを選別する
+//テーブル定義部以外の行すべてを削除するテスト
+	   if (Search_level==1){
+		for(i=1;i<nlist;i++){
+//console.log('selA=',selA_value,' no=',i,' Data=',DataA[i],DataB[i],DataC[i],DataD[i]);
+			if((selA_value!==DataA[dispflag[i]])&&(delflag[i]!="D"))　{
+				delflag[i]="1";   //出力しない
+				n_disp=n_disp-1;
+			}
+		}
+	  }
+	   if (Search_level==2){
+		for(i=1;i<nlist;i++){
+			if((delflag[dispflag[i]]=="")&&(selB_value!==DataB[dispflag[i]])&&(delflag[i]!="D"))　{
+				delflag[i]="2";   //出力しない
+				n_disp=n_disp-1;
+			}
+		}
+	  }
+ 	  if (Search_level==3){
+		for(i=1;i<nlist;i++){
+			if((delflag[i]=="")&&(selC_value!==DataC[dispflag[i]])&&(delflag[i]!="D"))　{
+				delflag[i]="3";   //出力しない
+				n_disp=n_disp-1;
+				}
+		}
+	  }
+ 	  if (Search_level==4){
+		for(i=1;i<nlist;i++){
+			if((delflag[i]=="")&&(selD_value!==DataD[dispflag[i]])&&(delflag[i]!="D"))　{
+				delflag[i]="4";   //出力しない
+				n_disp=n_disp-1;
+				}
+		}
+	  }
+console.log('standard Search=',Search_level,' nlist=',nlist,'n_disp=',n_disp);
+  }
+  else {
+	//delete flagのreset
+	for(i=0;i<nlist;i++){
+		if(delflag[i]!="D") {
+			 delflag[i]="";   //全件出力
+		}
+	}
+	n_disp=nlist-1;
+	 if (Search_level>0){
+		for(i=1;i<nlist;i++){
+			if((selA_value!==DataA[dispflag[i]])&&(delflag[i]!="D"))　{
+				delflag[i]="1";   //出力しない
+				n_disp=n_disp-1;
+			}
+		}
+	  }
+	  if (Search_level>1){
+		for(i=1;i<nlist;i++){
+			if((delflag[i]=="")&&(selB_value!==DataB[dispflag[i]])&&(delflag[i]!="D"))　{
+				delflag[i]="2";   //出力しない
+				n_disp=n_disp-1;
+			}
+		}
+	  }
+ 	  if (Search_level>2){
+		for(i=1;i<nlist;i++){
+			if((delflag[i]=="")&&(selC_value!==DataC[dispflag[i]])&&(delflag[i]!="D"))　{
+				delflag[i]="3";   //出力しない
+				n_disp=n_disp-1;
+			}
+		}
+	  }
+ 	  if (Search_level>3){
+		for(i=1;i<nlist;i++){
+			if((delflag[i]=="")&&(selD_value!==DataD[dispflag[i]])&&(delflag[i]!="D"))　{
+				delflag[i]="4";   //出力しない
+				n_disp=n_disp-1;
+			}
+		}
+	  }
+console.log('ResetSeq: Search=',Search_level,' nlist=',nlist,'n_disp=',n_disp);
+  }
+  BfS_level=Search_level;
+  clear_table();
+//tbodyノードを取得し、次にCopyしたいテーブル<tr>行objectを取り出す
+  var tbody = document.getElementById('my_db-tbody');
+//
+// 出力データの1行目はtr_first実体に割り付ける
+  var tr_first = tbody.childNodes[1];　　　//　childNodes[0]はシステム的な定義で出力用はchildNodes[1]
+  if (n_disp>0) { // テーブル先頭行がある場合
+	var n_first=1;
+	while(delflag[n_first]!=""){
+		  n_first++;
+		}
+console.log('first_line=',n_first);
+                  //tdエレメントを生成して　tdの中に入れたいモノをセット 
+                  var td = tr_first.childNodes[2*0+3];
+                  td.innerHTML = DataA[dispflag[n_first]];
+                  var td = tr_first.childNodes[2*1+3];
+                  td.innerHTML = DataB[dispflag[n_first]];
+                  var td = tr_first.childNodes[2*2+3];
+                  td.innerHTML = DataC[dispflag[n_first]];
+                  var td = tr_first.childNodes[2*3+3];
+                  td.innerHTML = DataD[dispflag[n_first]];
+                  var td = tr_first.childNodes[2*4+3];
+                  td.innerHTML = DataE[dispflag[n_first]];
+                  var td = tr_first.childNodes[2*5+3];
+                  td.innerHTML = DataF[dispflag[n_first]];
+//var n_f=2;
+console.log('Table no =',n_first,' rec num=',dispflag[n_first],' Overview=',DataF[dispflag[n_first]],' DataA=',DataA[dispflag[n_first]]);
+//console.log('Table no =',n_f,' rec num=',dispflag[n_f],' Overview=',DataF[dispflag[n_f]],' DataA=',DataA[dispflag[n_f]]);
+  }
+　　else {   //　ダミーdataに出力
+              for (j = 0; j < 6; j++){
+                  //tdエレメントをを生成
+                    var td = tr_first.childNodes[2*j+3];
+                  //tdの中に入れたいモノをセット 
+                  td.innerHTML = '';
+		}	
+  }
+// テーブル2行目以降はtbodyタグ直下のノード（行）を複製し、変数「list」に代入
+  for (i = n_first+1; i < nlist; i++){
+	if(delflag[i]==""){
+		var list = tbody.childNodes[1].cloneNode(true);
+		// 複製した行の2番目のセルを指定し、変数「td」に代入
+//		var list = tbody.childNodes[1].cloneNode(true);
+//             	  for (j = 0; j < 6; j++){
+                  	//tdエレメントをを生成
+//console.log('tr,child node=',j,' var=',td);
+                  	//tdの中に入れたいモノをセット
+                  var td = list.childNodes[2*0+3];
+                  td.innerHTML = DataA[dispflag[i]];
+                  var td = list.childNodes[2*1+3];
+                  td.innerHTML = DataB[dispflag[i]];
+                  var td = list.childNodes[2*2+3];
+                  td.innerHTML = DataC[dispflag[i]];
+                  var td = list.childNodes[2*3+3];
+                  td.innerHTML = DataD[dispflag[i]];
+                  var td = list.childNodes[2*4+3];
+                  td.innerHTML = DataE[dispflag[i]];
+                  var td = list.childNodes[2*5+3];
+                  td.innerHTML = DataF[dispflag[i]];	
+//console.log('data[i,j]= ',data_d[i][j]);
+//              	  }
+              //出力データの1行をtbodyの最終行に追加
+              tbody.appendChild(list);
+          }
+  }
+console.log('Table leng=',nlist,'disp_leng=',n_disp);
+console.log('delflag=',JSON.stringify(delflag)); 
+console.log('dispflag=',JSON.stringify(dispflag));
+  var js_delflag = JSON.stringify( delflag );
+  var js_dispflag = JSON.stringify( dispflag );
+  sessionStorage.setItem( "jsonsfg" , js_delflag );
+  sessionStorage.setItem( "jsonsdisp" , js_dispflag );
+}
+function setedit_disable() {
+
+//	Editable=$("#content").attr("contenteditable");
+//	var targ01=document.getElementById('Texview');
+		
+	if(Editable==true) {
+		// result変数に「はい」を選んだらtrue「いいえ」を選んだらfalseが入る
+		var result = confirm('編集処理を無効にしますか？');
+			if(result) {
+				  //はいを選んだときの処理
+			   } else {
+				return;
+				 //いいえを選んだときの処理
+			}
+		document.getElementById("content").contentEditable = "false";
+		$('input#comA').attr('disabled',true);
+		$('input#comB').attr('disabled',true);
+ 		$('input#comC').attr('disabled',true);
+		$('input#comD').attr('disabled',true);
+		$('input#T_date').attr('disabled',true);
+		$('textarea#Texview').attr('disabled',true); 
+//		targ01.readOnly=true;
+		edit_mode="";
+		Editable=false;
+console.log("EditState=false");
+		}
+	 else {
+//Edit可能モードでは本文フィールドは勿論、課題名～小分類、概要、更新日もEdit可能とする
+		edit_mode="edit_doc";
+		document.getElementById("content").contentEditable = "true";
+		Editable=true;
+		// 入力可にする
+		$('input#comA').attr('disabled',false);
+		$('input#comB').attr('disabled',false);
+ 		$('input#comC').attr('disabled',false);
+		$('input#comD').attr('disabled',false);
+		$('input#T_date').attr('disabled',false);
+		$('textarea#Texview').attr('disabled',false);
+//		targ01.readOnly=false;
+// 入力不可にする
+//targetElement.readOnly = true; 
+//		document.getElementById("Textview").disabled = "false";
+console.log("EditState=true");
+	}
+}
+function clear_table(){
+  var tbody = document.getElementById('my_db-tbody');
+console.log('Table leng=',tbody.childNodes.length);
+	var nn=tbody.childNodes.length;
+	for(i=0;i<nn-2;i++){
+		 var idel=nn-i-1;
+//console.log('remove list no=',idel);
+		  var tr = tbody.childNodes[idel];
+		  tbody.removeChild(tr); 
+	}
+}
+function htmlEntities( text, proc ) {
+  var entities = [
+    ['amp', '&'],
+    ['apos', '\''],
+    ['lt', '<'],
+    ['gt', '>'],
+  ];
+
+  for ( var i=0, max=entities.length; i<max; i++ ) {
+    if ( 'encode' === proc ) {
+      text = text.replace(new RegExp( entities[i][1], 'g' ), "&"+entities[i][0]+';' ).replace( '"', '&quot;' );
+    } else {
+      text = text.replace( '&quot;', '"' ).replace(new RegExp( '&'+entities[i][0]+';', 'g' ), entities[i][1] );
+    }
+  }
+  return text;
+}
+</script>
+		<!-- JavaScriptはbody終了タグの直上に配置します -->
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<!-- script src="js/tabnav_ex01.js"></script -->
+
+	<script type="text/javascript">
+	Aloha.ready( function() {
+		Aloha.jQuery('#content').aloha();
+	});
+	</script>
+</body>
+</html>

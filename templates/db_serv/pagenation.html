@@ -1,0 +1,98 @@
+﻿<html>
+    <head>
+        <title>How to make a pagination with django and jquery</title>
+        <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+    </head>
+    <body>
+<!--{{first_page}} -->
+<!-- loop pagination   -->
+{% for i in page_range %}
+<a style="margin-left: 5px; font-size: 20px;" href="{{i}}">{{i}}</a>
+{% endfor %}
+<!-- queryset for first page -->
+	  <table id="my_db">
+		<thead>
+		  <tr>
+	   	    <th>選</th>
+	   	    <th>課題名</th>
+	   	    <th>分類１</th>
+	   	    <th>分類２</th>
+	   	    <th>分類３</th>
+	   	    <th>更新日</th>
+	   	    <th>名称</th>
+		  </tr>
+   		</thead>
+   		<tbody id="my_db-tbody">
+<!-- {% for choice in resp.results %}
+		  <tr>
+	   	    <td bgcolor="#99CC00" align="center"><input type="checkbox" class="checkboxes" /></td>
+	   	    <td>{{ choice.theme}}</td>
+	   	    <td>{{ choice.bunrui1}}</td>
+	   	    <td>{{ choice.bunrui2}}</td>
+	   	    <td>{{ choice.bunrui3}}</td>
+	   	    <td>{{ choice.day_regist}}</td>
+	   	    <td>{{ choice.overview}}</td>
+		  </tr>
+{% endfor %} -->
+		</tbody>
+	</table>
+
+<!-- div id="posts">
+    {% for i in first_page %}
+    <h2>{{i.title}}</h2>
+    {% endfor %}
+</div -->
+
+<script>
+$('a').click(function(event){
+    event.preventDefault();
+    var page_n = $(this).attr('href');
+    post_ajax(page_n);
+   });
+function post_ajax(page_n) {
+    // ajax
+        $.ajax({
+                type: "POST",
+                url: "{% url 'pagenation' %}", // name of url
+                data : {    
+                page_n : page_n, //page_number
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (resp) {
+                //loop
+console.log(resp);
+               $('table tbody').html('')
+               $.each(resp.results, function(i, val) {
+        //最終行に"<tr><td>～</td></tr>"の文字列を追加
+        var str = "";
+        str += "<tr>";
+	str += "<td bgcolor='#99CC00' align='center'><input type='checkbox' class='checkboxes' /></td>";
+        str += "<td>"+val.no+"</td>";
+        str += "<td>"+val.theme+"</td>";
+        str += "<td>"+val.bunrui1+"</td>";
+        str += "<td>"+val.bunrui2+"</td>";
+        str += "<td>"+val.bunrui3+"</td>";
+        str += "<td>"+val.day_regist+"</td>";
+        str += "<td>"+val.overview+"</td>";
+        str += "</tr>";
+        $('table tbody').append(str);
+                //$('#posts').append('<h5>' + val.no + val.theme + val.overview + '</h5>')
+
+               });
+            },
+            error: function () {}
+        }); // 
+}
+post_ajax(1);
+//const href = $(a).attr("1");
+//location.href = href;
+//href属性(URL)を使いたいaタグを指定して、うしろに[0]を付ける
+//$(a)[0].click();
+//document.getElementById("fig_sel_end").click();
+//var cent="{{first_page}}"
+//console.log(cent);
+</script>
+</body></html>
